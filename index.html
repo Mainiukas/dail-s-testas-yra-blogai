@@ -1,0 +1,413 @@
+<!doctype html>
+<html lang="lt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lietuvos dailės testas</title>
+<style>
+  :root {
+    --bg: #f6f3ee; --card: #ffffff; --ink: #1f1d1a; --muted: #6b655c; --line: #e2dcd2;
+    --accent: #8a3b12; --accent-ink: #fff; --ok: #1e7a3a; --ok-bg: #e5f4e9;
+    --half: #8a6a00; --half-bg: #fbf3d5; --bad: #b3261e; --bad-bg: #fbe7e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171512; --card: #221f1b; --ink: #eee9e2; --muted: #a39b90; --line: #3a352e;
+      --accent: #e08a55; --accent-ink: #1b1209; --ok: #6fcf8b; --ok-bg: #1d3324;
+      --half: #e6c75a; --half-bg: #3a3218; --bad: #f08a80; --bad-bg: #3d1f1c;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+  .bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 0; }
+  h1 { font-size: 1.15rem; margin: 0; flex: 1; min-width: 200px; }
+  nav { display: flex; gap: 6px; }
+  nav button { border: 1px solid var(--line); background: transparent; color: var(--ink);
+    padding: 8px 14px; border-radius: 8px; font: inherit; cursor: pointer; }
+  nav button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  main { padding: 24px 0 64px; }
+  h2 { margin: 0 0 12px; font-size: 1.4rem; }
+  .muted { color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+  .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
+    padding: 10px 18px; font: inherit; font-weight: 600; cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  input[type=text], input[type=number] { font: inherit; color: var(--ink); background: var(--bg);
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; }
+  input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  label { display: block; font-weight: 600; margin-bottom: 4px; font-size: .95rem; }
+
+  /* Treniruotė */
+  .tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
+  .tools input[type=text] { max-width: 320px; }
+  .list { display: grid; gap: 14px; }
+  .item { display: grid; grid-template-columns: 260px 1fr; gap: 18px; align-items: start; }
+  .item .num { font-weight: 700; color: var(--accent); }
+  .item .author { font-size: 1.1rem; font-weight: 700; margin: 2px 0; }
+  .item .title { font-size: 1.05rem; margin: 0 0 6px; }
+  .item details { color: var(--muted); font-size: .92rem; }
+  .hidden-answers .answer { filter: blur(7px); cursor: pointer; transition: filter .15s; user-select: none; }
+  .hidden-answers .answer.reveal { filter: none; }
+  .pic { width: 100%; border-radius: 8px; background: var(--bg); display: block; object-fit: contain; }
+  .item .pic { max-height: 240px; cursor: zoom-in; }
+  .ph { display: flex; align-items: center; justify-content: center; text-align: center;
+    aspect-ratio: 4/3; border: 2px dashed var(--line); border-radius: 8px; color: var(--muted);
+    font-size: .9rem; padding: 12px; background: var(--bg); }
+
+  /* Testas */
+  .setup { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin: 16px 0; }
+  .progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
+  .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
+  .qhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .qimg .pic { max-height: 60vh; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+  .fb { border-radius: 8px; padding: 10px 12px; margin-top: 6px; font-size: .95rem; }
+  .fb.ok { background: var(--ok-bg); color: var(--ok); }
+  .fb.half { background: var(--half-bg); color: var(--half); }
+  .fb.bad { background: var(--bad-bg); color: var(--bad); }
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Ataskaita */
+  .score { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .tile { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 130px; }
+  .tile b { display: block; font-size: 1.6rem; }
+  .rep { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  .rep th, .rep td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
+  .rep img, .rep .ph { width: 90px; aspect-ratio: auto; max-height: 90px; font-size: .7rem; padding: 4px; }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 700; padding: 1px 8px; border-radius: 99px; }
+  .tag.ok { background: var(--ok-bg); color: var(--ok); }
+  .tag.half { background: var(--half-bg); color: var(--half); }
+  .tag.bad { background: var(--bad-bg); color: var(--bad); }
+
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none;
+    align-items: center; justify-content: center; z-index: 20; cursor: zoom-out; padding: 16px; }
+  .lightbox.show { display: flex; }
+  .lightbox img { max-width: 100%; max-height: 100%; }
+
+  @media (max-width: 680px) {
+    .item { grid-template-columns: 1fr; }
+    .setup, .answers { grid-template-columns: 1fr; }
+    .rep .hide-sm { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <h1>🎨 Lietuvos dailė – testas 2026</h1>
+    <nav>
+      <button data-tab="train" class="active">Treniruotė</button>
+      <button data-tab="test">Testavimas</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- TRENIRUOTĖ -->
+  <section id="train">
+    <h2>Treniruotė</h2>
+    <p class="muted">Visi kūriniai: autorius ir pavadinimas. Teste reikės parašyti autoriaus pavardę ir kūrinio pavadinimą.</p>
+    <div class="tools">
+      <input type="text" id="filter" placeholder="Ieškoti autoriaus ar pavadinimo…">
+      <label style="display:flex;gap:8px;align-items:center;margin:0;font-weight:500">
+        <input type="checkbox" id="hideAnswers"> Paslėpti atsakymus (spausk, kad atidengtum)
+      </label>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+
+  <!-- TESTAVIMAS -->
+  <section id="test" hidden>
+    <div id="testSetup" class="card">
+      <h2>Testavimas</h2>
+      <p class="muted">Pasirink kūrinių intervalą ir kiek klausimų nori. Kūriniai bus rodomi atsitiktine tvarka ir nesikartos.
+        Už teisingą pavardę – 1 taškas, už teisingą pavadinimą – 1 taškas (su nedidele rašybos klaida – 0,5 taško).</p>
+      <div class="setup">
+        <div><label for="from">Nuo kūrinio Nr.</label><input type="number" id="from" min="1"></div>
+        <div><label for="to">Iki kūrinio Nr.</label><input type="number" id="to" min="1"></div>
+        <div><label for="count">Kiek klausimų</label><input type="number" id="count" min="1"></div>
+      </div>
+      <p class="muted" id="setupHint"></p>
+      <button class="btn" id="start">Pradėti testą</button>
+    </div>
+
+    <div id="testRun" class="card" hidden>
+      <div class="progress"><div id="prog"></div></div>
+      <div class="qhead">
+        <strong id="qnum"></strong>
+        <span class="muted">Taškai: <b id="pts">0</b></span>
+      </div>
+      <div class="qimg" id="qimg"></div>
+      <div class="answers">
+        <div>
+          <label for="ansAuthor">Autoriaus pavardė</label>
+          <input type="text" id="ansAuthor" autocomplete="off" spellcheck="false">
+          <div id="fbAuthor"></div>
+        </div>
+        <div>
+          <label for="ansTitle">Kūrinio pavadinimas</label>
+          <input type="text" id="ansTitle" autocomplete="off" spellcheck="false">
+          <div id="fbTitle"></div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="check">Tikrinti</button>
+        <button class="btn" id="next" hidden>Kitas →</button>
+        <button class="btn ghost" id="finish">Baigti testą</button>
+      </div>
+    </div>
+
+    <div id="report" class="card" hidden></div>
+  </section>
+</main>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script src="works.js"></script>
+<script>
+const WORKS = window.WORKS;
+const N = WORKS.length;
+const EXTS = ["jpg", "jpeg", "png", "webp", "JPG", "PNG"];
+const pad = n => String(n).padStart(2, "0");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* ---------- Nuotraukos ---------- */
+function picture(idx, cls = "pic") {
+  // idx – 0-based. Bando img/NN.jpg, .jpeg, .png, .webp; nepavykus – rodo pakaitalą.
+  const wrap = document.createElement("div");
+  const img = new Image();
+  img.className = cls;
+  img.alt = "Kūrinys Nr. " + (idx + 1);
+  let i = 0;
+  const tryNext = () => {
+    if (i >= EXTS.length) {
+      wrap.innerHTML = `<div class="ph">Nuotrauka Nr. ${idx + 1}<br>(įkelk failą img/${pad(idx + 1)}.jpg)</div>`;
+      return;
+    }
+    img.src = `img/${pad(idx + 1)}.${EXTS[i++]}`;
+  };
+  img.onerror = tryNext;
+  img.onclick = () => { const lb = document.getElementById("lightbox"); lb.querySelector("img").src = img.src; lb.classList.add("show"); };
+  wrap.appendChild(img);
+  tryNext();
+  return wrap;
+}
+document.getElementById("lightbox").onclick = e => e.currentTarget.classList.remove("show");
+
+/* ---------- Skirtukai ---------- */
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("active", x === b));
+  document.getElementById("train").hidden = b.dataset.tab !== "train";
+  document.getElementById("test").hidden = b.dataset.tab !== "test";
+  window.scrollTo(0, 0);
+});
+
+/* ---------- Treniruotė ---------- */
+const list = document.getElementById("list");
+WORKS.forEach((w, i) => {
+  const card = document.createElement("div");
+  card.className = "card item";
+  card.dataset.search = norm(w.author + " " + w.title + " " + w.aliases.join(" "));
+  card.appendChild(picture(i));
+  const txt = document.createElement("div");
+  txt.innerHTML = `
+    <div class="num">Nr. ${i + 1}</div>
+    <div class="answer">
+      <div class="author">${esc(w.author)}</div>
+      <div class="title">„${esc(w.title.replace(/[„“”"]/g, ""))}“</div>
+    </div>
+    <details><summary>Daugiau (nebus teste)</summary>
+      ${w.year ? `<div><b>Metai:</b> ${esc(w.year)}</div>` : ""}
+      <div>${esc(w.info)}</div>
+    </details>`;
+  txt.querySelector(".answer").onclick = e => e.currentTarget.classList.toggle("reveal");
+  card.appendChild(txt);
+  list.appendChild(card);
+});
+document.getElementById("filter").oninput = e => {
+  const q = norm(e.target.value);
+  list.querySelectorAll(".item").forEach(c => c.hidden = q && !c.dataset.search.includes(q));
+};
+document.getElementById("hideAnswers").onchange = e => {
+  list.classList.toggle("hidden-answers", e.target.checked);
+  list.querySelectorAll(".answer").forEach(a => a.classList.remove("reveal"));
+};
+
+/* ---------- Atsakymų tikrinimas ---------- */
+function norm(s) {
+  return String(s).toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")    // lietuviškos raidės -> lotyniškos
+    .replace(/šv\.|sv\./g, "sv ")
+    .replace(/[^a-z0-9]+/g, " ").trim();
+}
+function lev(a, b) {
+  const m = a.length, n = b.length;
+  if (!m) return n; if (!n) return m;
+  let prev = Array.from({ length: n + 1 }, (_, j) => j);
+  for (let i = 1; i <= m; i++) {
+    const cur = [i];
+    for (let j = 1; j <= n; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[n];
+}
+const sim = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
+
+// grąžina 1 (teisinga), 0.5 (beveik – rašybos klaida), 0 (neteisinga)
+function grade(answer, options, tokenMode) {
+  const a = norm(answer);
+  if (!a) return 0;
+  const opts = options.map(norm);
+  const cands = tokenMode ? [a, ...a.split(" ")] : [a];       // pavardę galima rašyti su vardu
+  if (tokenMode) opts.push(...opts.flatMap(o => o.split(" ")).filter(o => o.length > 3));
+  let best = 0;
+  for (const c of cands) for (const o of opts) {
+    if (c === o) return 1;
+    best = Math.max(best, sim(c, o));
+  }
+  return best >= 0.8 ? 0.5 : 0;
+}
+function fbHtml(score, correct) {
+  if (score === 1) return `<div class="fb ok">✓ Teisingai: <b>${esc(correct)}</b></div>`;
+  if (score === 0.5) return `<div class="fb half">≈ Beveik (0,5 t.). Teisingai: <b>${esc(correct)}</b></div>`;
+  return `<div class="fb bad">✗ Neteisingai. Teisingai: <b>${esc(correct)}</b></div>`;
+}
+const tag = s => s === 1 ? '<span class="tag ok">1</span>' : s === 0.5 ? '<span class="tag half">0,5</span>' : '<span class="tag bad">0</span>';
+
+/* ---------- Testas ---------- */
+const $ = id => document.getElementById(id);
+const fromEl = $("from"), toEl = $("to"), countEl = $("count");
+fromEl.max = toEl.max = countEl.max = N;
+fromEl.value = 1; toEl.value = N; countEl.value = N;
+
+function clampSetup() {
+  let f = Math.min(Math.max(parseInt(fromEl.value) || 1, 1), N);
+  let t = Math.min(Math.max(parseInt(toEl.value) || N, 1), N);
+  if (f > t) [f, t] = [t, f];
+  const span = t - f + 1;
+  let c = Math.min(Math.max(parseInt(countEl.value) || span, 1), span);
+  return { f, t, c, span };
+}
+function updateHint() {
+  const { f, t, c, span } = clampSetup();
+  countEl.max = span;
+  $("setupHint").textContent = `Bus klausiama ${c} iš ${span} kūrinių (Nr. ${f}–${t}). Maksimalus balas: ${c * 2}.`;
+}
+[fromEl, toEl].forEach(el => el.oninput = () => { const { span } = clampSetup(); countEl.value = span; updateHint(); });
+countEl.oninput = updateHint;
+updateHint();
+
+let queue = [], pos = 0, results = [], checked = false;
+
+function shuffle(a) {
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+$("start").onclick = () => {
+  const { f, t, c } = clampSetup();
+  const pool = [];
+  for (let i = f - 1; i <= t - 1; i++) pool.push(i);
+  queue = shuffle(pool).slice(0, c);          // kiekvienas kūrinys – tik vieną kartą
+  pos = 0; results = [];
+  $("testSetup").hidden = true; $("report").hidden = true; $("testRun").hidden = false;
+  showQuestion();
+};
+
+function showQuestion() {
+  checked = false;
+  const idx = queue[pos];
+  $("qnum").textContent = `Klausimas ${pos + 1} iš ${queue.length}`;
+  $("prog").style.width = (pos / queue.length * 100) + "%";
+  $("pts").textContent = fmt(total());
+  const q = $("qimg"); q.innerHTML = ""; q.appendChild(picture(idx));
+  ["ansAuthor", "ansTitle"].forEach(id => { $(id).value = ""; $(id).disabled = false; });
+  $("fbAuthor").innerHTML = $("fbTitle").innerHTML = "";
+  $("check").hidden = false; $("next").hidden = true;
+  $("ansAuthor").focus();
+}
+
+function check() {
+  if (checked) return;
+  checked = true;
+  const idx = queue[pos], w = WORKS[idx];
+  const a = $("ansAuthor").value.trim(), t = $("ansTitle").value.trim();
+  const sa = grade(a, w.surnames, true);
+  const st = grade(t, [w.title, ...w.aliases], false);
+  results.push({ idx, a, t, sa, st });
+  $("fbAuthor").innerHTML = fbHtml(sa, w.author);
+  $("fbTitle").innerHTML = fbHtml(st, w.title);
+  ["ansAuthor", "ansTitle"].forEach(id => $(id).disabled = true);
+  $("pts").textContent = fmt(total());
+  $("check").hidden = true; $("next").hidden = false;
+  $("next").textContent = pos + 1 < queue.length ? "Kitas →" : "Rodyti ataskaitą";
+  $("next").focus();
+}
+function next() {
+  pos++;
+  if (pos < queue.length) showQuestion(); else showReport();
+}
+$("check").onclick = check;
+$("next").onclick = next;
+$("ansAuthor").onkeydown = e => { if (e.key === "Enter") $("ansTitle").focus(); };
+$("ansTitle").onkeydown = e => { if (e.key === "Enter") check(); };
+$("finish").onclick = () => {
+  if (!results.length && !confirm("Dar neatsakei nė į vieną klausimą. Baigti?")) return;
+  showReport();
+};
+
+const total = () => results.reduce((s, r) => s + r.sa + r.st, 0);
+const fmt = x => String(x).replace(".", ",");
+
+function showReport() {
+  $("testRun").hidden = true;
+  const rep = $("report"); rep.hidden = false;
+  const max = results.length * 2, sum = total();
+  const pct = max ? Math.round(sum / max * 100) : 0;
+  const pa = results.reduce((s, r) => s + r.sa, 0), pt = results.reduce((s, r) => s + r.st, 0);
+  const grade10 = max ? Math.max(1, Math.round(sum / max * 10)) : "–";
+  const unanswered = queue.length - results.length;
+  rep.innerHTML = `
+    <h2>Ataskaita</h2>
+    <div class="score">
+      <div class="tile"><span class="muted">Taškai</span><b>${fmt(sum)} / ${max}</b></div>
+      <div class="tile"><span class="muted">Procentai</span><b>${pct}%</b></div>
+      <div class="tile"><span class="muted">Pažymys (apytikslis)</span><b>${grade10}</b></div>
+      <div class="tile"><span class="muted">Autoriai / pavadinimai</span><b>${fmt(pa)} / ${fmt(pt)}</b></div>
+    </div>
+    ${unanswered ? `<p class="muted">Testas baigtas anksčiau: neatsakyta ${unanswered} klausim${unanswered === 1 ? "o" : "ų"}.</p>` : ""}
+    <div style="overflow-x:auto"><table class="rep">
+      <thead><tr><th>#</th><th class="hide-sm">Kūrinys</th><th>Tavo atsakymas</th><th>Teisingas atsakymas</th><th>Taškai</th></tr></thead>
+      <tbody></tbody></table></div>
+    <div class="actions" style="margin-top:18px">
+      <button class="btn" id="again">Kartoti su tais pačiais nustatymais</button>
+      <button class="btn ghost" id="retryWrong">Kartoti tik klaidas</button>
+      <button class="btn ghost" id="newTest">Naujas testas</button>
+    </div>`;
+  const tb = rep.querySelector("tbody");
+  results.forEach((r, k) => {
+    const w = WORKS[r.idx];
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${k + 1}<div class="muted">Nr. ${r.idx + 1}</div></td><td class="hide-sm"></td>
+      <td>${tag(r.sa)} ${esc(r.a || "—")}<br>${tag(r.st)} ${esc(r.t || "—")}</td>
+      <td><b>${esc(w.author)}</b><br>${esc(w.title)}</td>
+      <td><b>${fmt(r.sa + r.st)}</b> / 2</td>`;
+    tr.children[1].appendChild(picture(r.idx));
+    tb.appendChild(tr);
+  });
+  const wrong = results.filter(r => r.sa + r.st < 2).map(r => r.idx);
+  const rw = rep.querySelector("#retryWrong");
+  if (!wrong.length) rw.hidden = true;
+  rw.onclick = () => { queue = shuffle(wrong.slice()); pos = 0; results = []; rep.hidden = true; $("testRun").hidden = false; showQuestion(); };
+  rep.querySelector("#again").onclick = () => $("start").click();
+  rep.querySelector("#newTest").onclick = () => { rep.hidden = true; $("testSetup").hidden = false; };
+  window.scrollTo(0, 0);
+}
+</script>
+</body>
+</html>
