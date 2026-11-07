@@ -7,8 +7,10 @@ Atidaryk `index.html` naršyklėje (arba įjunk GitHub Pages).
 
 ## Nuotraukos
 
-Įdėk nuotraukas į aplanką `img/` pavadintas pagal kūrinio numerį: `01.jpg`, `02.jpg`, … `29.jpg`
-(tinka ir `.jpeg`, `.png`, `.webp`). Numeriai – tokie, kaip skiltyje „Treniruotė“ ir `works.js`.
+Nuotraukos paimtos iš dokumento „Lietuviu_daile_25.docx“ ir sudėtos į aplanką `img/` pagal kūrinio numerį:
+`01.jpg` … `29.jpg`. Kūriniai su keliomis nuotraukomis turi papildomas: `18-2.jpg` (Jonyno „Metai“),
+`29-2.jpg`, `29-3.jpg` („Vilniaus ženklai“); jų skaičius nurodytas `works.js` lauke `extra`.
+Norėdamas pakeisti nuotrauką, tiesiog pakeisk failą tuo pačiu pavadinimu.
 
 | Nr. | Kūrinys | Nr. | Kūrinys |
 |---|---|---|---|

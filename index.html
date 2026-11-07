@@ -53,7 +53,12 @@
   .hidden-answers .answer { filter: blur(7px); cursor: pointer; transition: filter .15s; user-select: none; }
   .hidden-answers .answer.reveal { filter: none; }
   .pic { width: 100%; border-radius: 8px; background: var(--bg); display: block; object-fit: contain; }
-  .item .pic { max-height: 240px; cursor: zoom-in; }
+  .pic { cursor: zoom-in; }
+  .item .pic { max-height: 240px; }
+  .multi { display: grid; gap: 8px; }
+  .qimg .multi { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .qimg .multi .pic { max-height: 45vh; }
+  .rep .multi { gap: 4px; }
   .ph { display: flex; align-items: center; justify-content: center; text-align: center;
     aspect-ratio: 4/3; border: 2px dashed var(--line); border-radius: 8px; color: var(--muted);
     font-size: .9rem; padding: 12px; background: var(--bg); }
@@ -176,24 +181,34 @@ const pad = n => String(n).padStart(2, "0");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 
 /* ---------- Nuotraukos ---------- */
-function picture(idx, cls = "pic") {
-  // idx – 0-based. Bando img/NN.jpg, .jpeg, .png, .webp; nepavykus – rodo pakaitalą.
-  const wrap = document.createElement("div");
+function oneImage(base, label) {
+  // Bando base.jpg, .jpeg, .png, .webp; nepavykus – rodo pakaitalą.
+  const box = document.createElement("div");
   const img = new Image();
-  img.className = cls;
-  img.alt = "Kūrinys Nr. " + (idx + 1);
+  img.className = "pic";
+  img.alt = label;
   let i = 0;
   const tryNext = () => {
     if (i >= EXTS.length) {
-      wrap.innerHTML = `<div class="ph">Nuotrauka Nr. ${idx + 1}<br>(įkelk failą img/${pad(idx + 1)}.jpg)</div>`;
+      box.innerHTML = `<div class="ph">${esc(label)}<br>(įkelk failą ${base}.jpg)</div>`;
       return;
     }
-    img.src = `img/${pad(idx + 1)}.${EXTS[i++]}`;
+    img.src = `${base}.${EXTS[i++]}`;
   };
   img.onerror = tryNext;
   img.onclick = () => { const lb = document.getElementById("lightbox"); lb.querySelector("img").src = img.src; lb.classList.add("show"); };
-  wrap.appendChild(img);
+  box.appendChild(img);
   tryNext();
+  return box;
+}
+function picture(idx) {
+  // idx – 0-based. Pagrindinė nuotrauka img/NN.jpg, papildomos img/NN-2.jpg, img/NN-3.jpg …
+  const wrap = document.createElement("div");
+  const extra = WORKS[idx].extra || 0;
+  if (extra) wrap.className = "multi";
+  const label = "Kūrinys Nr. " + (idx + 1);
+  wrap.appendChild(oneImage(`img/${pad(idx + 1)}`, label));
+  for (let k = 2; k <= extra + 1; k++) wrap.appendChild(oneImage(`img/${pad(idx + 1)}-${k}`, label));
   return wrap;
 }
 document.getElementById("lightbox").onclick = e => e.currentTarget.classList.remove("show");

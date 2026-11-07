@@ -1,5 +1,5 @@
 // Lietuvos dailės kūriniai testui 2026.
-// Nuotraukos: img/01.jpg ... img/29.jpg (tinka ir .jpeg, .png, .webp).
+// Nuotraukos: img/01.jpg ... img/29.jpg; papildomos – img/NN-2.jpg, img/NN-3.jpg (`extra` – kiek papildomų).
 // `surnames` – priimamos pavardės variantai, `aliases` – priimami pavadinimo variantai.
 window.WORKS = [
   { author: "Laurynas Gucevičius", surnames: ["Gucevičius", "Stuoka-Gucevičius", "Stuoka"],
@@ -56,7 +56,7 @@ window.WORKS = [
     year: "1966", info: "XX a. II pusės modernizmas, A. Aalto įtaka. Taip pat Lazdynų ir Vyriausybės rūmų autorius." },
   { author: "Vytautas Kazimieras Jonynas", surnames: ["Jonynas"],
     title: "Iliustracijos K. Donelaičio poemai „Metai“", aliases: ["Metai", "Iliustracijos Metams", "Metų iliustracijos", "Iliustracijos poemai Metai", "Donelaičio Metai", "Iliustracijos Donelaičio poemai Metai"],
-    year: "1940", info: "Medžio raižiniai – lietuviškos knygos grafikos klasika." },
+    extra: 1, year: "1940", info: "Medžio raižiniai – lietuviškos knygos grafikos klasika." },
   { author: "Rimtautas Vincentas Gibavičius", surnames: ["Gibavičius"],
     title: "Šv. Onos ir Bernardinų bažnyčios", aliases: ["Šv. Onos bažnyčia", "Onos ir Bernardinų bažnyčios", "Šventos Onos ir Bernardinų bažnyčios"],
     year: "1967", info: "Medžio raižinių ciklas „Vilnius“ (200 raižinių)." },
@@ -89,5 +89,5 @@ window.WORKS = [
     year: "1994–1995", info: "Vilnius. Šiuolaikinė skulptūra kaip intervencija į miesto erdvę." },
   { author: "Kunotas Vildžiūnas", surnames: ["Vildžiūnas"],
     title: "Vilniaus ženklai", aliases: [],
-    year: "2010", info: "Skulptūros Vilniaus tiltams ir Neries erdvei. Vlado Vildžiūno sūnus." }
+    extra: 2, year: "2010", info: "Skulptūros Vilniaus tiltams ir Neries erdvei. Vlado Vildžiūno sūnus." }
 ];
