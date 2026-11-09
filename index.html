@@ -2,93 +2,133 @@
 <html lang="lt">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lietuvos dailės testas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=Spectral:wght@600;700&display=swap">
 <style>
+  /* Galerijos siena: ramus pilkšvas fonas, kūriniai baltose kortelėse, gilus žalias akcentas */
   :root {
-    --bg: #f6f3ee; --card: #ffffff; --ink: #1f1d1a; --muted: #6b655c; --line: #e2dcd2;
-    --accent: #8a3b12; --accent-ink: #fff; --ok: #1e7a3a; --ok-bg: #e5f4e9;
-    --half: #8a6a00; --half-bg: #fbf3d5; --bad: #b3261e; --bad-bg: #fbe7e5;
+    --bg: #eceeec; --card: #ffffff; --ink: #1a201d; --muted: #5d6762; --line: #d6dbd8;
+    --accent: #1f5c4a; --accent-ink: #ffffff;
+    --ok: #1e7a3a; --ok-bg: #e3f2e7; --half: #7d6200; --half-bg: #f8f0d0; --bad: #b3261e; --bad-bg: #fbe6e4;
+    --display: "Spectral", Georgia, serif; --body: "IBM Plex Sans", system-ui, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #171512; --card: #221f1b; --ink: #eee9e2; --muted: #a39b90; --line: #3a352e;
-      --accent: #e08a55; --accent-ink: #1b1209; --ok: #6fcf8b; --ok-bg: #1d3324;
-      --half: #e6c75a; --half-bg: #3a3218; --bad: #f08a80; --bad-bg: #3d1f1c;
+    :root:not([data-theme="light"]) {
+      --bg: #121614; --card: #1b211e; --ink: #e8ece9; --muted: #9aa49f; --line: #2f3833;
+      --accent: #6cc3a2; --accent-ink: #0d1a14;
+      --ok: #6fcf8b; --ok-bg: #1b3324; --half: #e6c75a; --half-bg: #39311a; --bad: #f08a80; --bad-bg: #3b1f1c;
+      color-scheme: dark;
     }
   }
+  :root[data-theme="dark"] {
+    --bg: #121614; --card: #1b211e; --ink: #e8ece9; --muted: #9aa49f; --line: #2f3833;
+    --accent: #6cc3a2; --accent-ink: #0d1a14;
+    --ok: #6fcf8b; --ok-bg: #1b3324; --half: #e6c75a; --half-bg: #39311a; --bad: #f08a80; --bad-bg: #3b1f1c;
+    color-scheme: dark;
+  }
+
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--ink);
-    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
-  .bar { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; padding: 12px 0; }
-  h1 { font-size: 1.15rem; margin: 0; flex: 1; min-width: 200px; }
-  nav { display: flex; gap: 6px; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 var(--body); }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--card); }
+  img { max-width: 100%; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  h1, h2, h3, .item .author { font-family: var(--display); text-wrap: balance; }
+  h2 { margin: 0 0 12px; font-size: 1.45rem; line-height: 1.2; }
+  h3 { margin: 22px 0 10px; font-size: 1.1rem; }
+  .muted { color: var(--muted); }
+
+  header { background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+  .wrap { max-width: 980px; margin-inline: auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .bar { display: flex; align-items: center; gap: 10px 16px; flex-wrap: wrap; padding-block: 12px; }
+  h1 { font-size: 1.2rem; line-height: 1.2; margin: 0; flex: 1; min-width: 180px; }
+  nav { display: flex; gap: 6px; flex-wrap: wrap; }
   nav button { border: 1px solid var(--line); background: transparent; color: var(--ink);
     padding: 8px 14px; border-radius: 8px; font: inherit; cursor: pointer; }
-  nav button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  main { padding: 24px 0 64px; }
-  h2 { margin: 0 0 12px; font-size: 1.4rem; }
-  .muted { color: var(--muted); }
+  nav button.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  main { padding-block: 24px 64px; }
+
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
-  .btn { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px;
+  .btn { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 8px;
     padding: 10px 18px; font: inherit; font-weight: 600; cursor: pointer; }
-  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); font-weight: 500; }
-  .btn:disabled { opacity: .5; cursor: default; }
+  .btn.ghost { background: transparent; color: var(--ink); border-color: var(--line); font-weight: 500; }
   input[type=text], input[type=number] { font: inherit; color: var(--ink); background: var(--bg);
     border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; width: 100%; }
   input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
-  label { display: block; font-weight: 600; margin-bottom: 4px; font-size: .95rem; }
+  input:disabled { opacity: 1; -webkit-text-fill-color: currentColor; }
+  input.is-ok { border-color: var(--ok); background: var(--ok-bg); }
+  input.is-half { border-color: var(--half); background: var(--half-bg); }
+  input.is-bad { border-color: var(--bad); background: var(--bad-bg); }
+  label, .lab { display: block; font-weight: 600; font-size: .9rem; }
 
   /* Treniruotė */
   .tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
   .tools input[type=text] { max-width: 320px; }
+  .tools .toggle { display: flex; gap: 8px; align-items: center; font-weight: 500; font-size: 1rem; }
   .list { display: grid; gap: 14px; }
   .item { display: grid; grid-template-columns: 260px 1fr; gap: 18px; align-items: start; }
-  .item .num { font-weight: 700; color: var(--accent); }
-  .item .author { font-size: 1.1rem; font-weight: 700; margin: 2px 0; }
-  .item .title { font-size: 1.05rem; margin: 0 0 6px; }
-  .item details { color: var(--muted); font-size: .92rem; }
+  .item > * { min-width: 0; }
+  .item .num { font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .item .author { font-size: 1.15rem; font-weight: 700; margin-block: 2px; }
+  .item .title { font-size: 1.05rem; }
+  .item .place { margin-top: 2px; }
+  .item details { color: var(--muted); font-size: .92rem; margin-top: 8px; }
   .hidden-answers .answer { filter: blur(7px); cursor: pointer; transition: filter .15s; user-select: none; }
   .hidden-answers .answer.reveal { filter: none; }
-  .pic { width: 100%; border-radius: 8px; background: var(--bg); display: block; object-fit: contain; }
-  .pic { cursor: zoom-in; }
+  .pic { width: 100%; border-radius: 8px; background: var(--bg); display: block; object-fit: contain; cursor: zoom-in; }
   .item .pic { max-height: 240px; }
   .multi { display: grid; gap: 8px; }
-  .qimg .multi { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-  .qimg .multi .pic { max-height: 45vh; }
-  .rep .multi { gap: 4px; }
   .ph { display: flex; align-items: center; justify-content: center; text-align: center;
-    aspect-ratio: 4/3; border: 2px dashed var(--line); border-radius: 8px; color: var(--muted);
+    aspect-ratio: 4/3; max-width: 100%; border: 2px dashed var(--line); border-radius: 8px; color: var(--muted);
     font-size: .9rem; padding: 12px; background: var(--bg); }
 
-  /* Testas */
-  .setup { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin: 16px 0; }
+  /* Praktika ir testas */
+  .setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-block: 16px; }
+  .setup > div { display: grid; gap: 4px; }
   .progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
   .progress > div { height: 100%; background: var(--accent); width: 0; transition: width .2s; }
-  .qhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-  .qimg .pic { max-height: 60vh; }
-  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
-  .fb { border-radius: 8px; padding: 10px 12px; margin-top: 6px; font-size: .95rem; }
+  .qhead { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; font-variant-numeric: tabular-nums; }
+  .qimg .pic { max-height: 50vh; }
+  .qimg .multi { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+  .qimg .multi .pic { max-height: 40vh; }
+  .answers { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 18px; margin-block: 16px 12px; }
+  .field { display: grid; gap: 4px; align-content: start; min-width: 0; }
+  .author-row { display: flex; gap: 10px; align-items: flex-end; }
+  .sub { display: grid; gap: 4px; }
+  .sub.grow { flex: 1; min-width: 0; }
+  .initials { display: flex; gap: 6px; }
+  .initials input { width: 46px; padding-inline: 0; text-align: center; text-transform: uppercase; font-weight: 600; }
+  .fb { border-radius: 8px; padding: 8px 12px; margin-top: 4px; font-size: .95rem; }
   .fb.ok { background: var(--ok-bg); color: var(--ok); }
   .fb.half { background: var(--half-bg); color: var(--half); }
   .fb.bad { background: var(--bad-bg); color: var(--bad); }
+  .msg { margin-bottom: 12px; }
+  .msg:empty { display: none; }
   .actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
   /* Ataskaita */
-  .score { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0 20px; }
-  .tile { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 130px; }
-  .tile b { display: block; font-size: 1.6rem; }
+  .score { display: flex; gap: 12px; flex-wrap: wrap; margin-block: 12px 4px; }
+  .tile { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; min-width: 150px; }
+  .tile b { display: block; font-size: 1.6rem; font-variant-numeric: tabular-nums; }
+  .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 20px; margin-bottom: 20px; }
+  .part-top { display: flex; justify-content: space-between; gap: 8px; font-variant-numeric: tabular-nums; }
+  .meter { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-top: 4px; }
+  .meter > div { height: 100%; background: var(--accent); }
+  .scroll { overflow-x: auto; }
   .rep { width: 100%; border-collapse: collapse; font-size: .93rem; }
   .rep th, .rep td { border-bottom: 1px solid var(--line); padding: 8px 6px; text-align: left; vertical-align: top; }
-  .rep img, .rep .ph { width: 90px; aspect-ratio: auto; max-height: 90px; font-size: .7rem; padding: 4px; }
-  .tag { display: inline-block; font-size: .8rem; font-weight: 700; padding: 1px 8px; border-radius: 99px; }
+  .rep .pic, .rep .ph { width: 90px; max-height: 90px; font-size: .7rem; padding: 4px; }
+  .rep .multi { gap: 4px; }
+  .rep .ans { display: flex; gap: 6px; align-items: baseline; flex-wrap: wrap; }
+  .rep .cap { color: var(--muted); font-size: .8rem; min-width: 84px; }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 700; padding: 1px 8px; border-radius: 99px; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .tag.ok { background: var(--ok-bg); color: var(--ok); }
   .tag.half { background: var(--half-bg); color: var(--half); }
   .tag.bad { background: var(--bad-bg); color: var(--bad); }
 
-  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,.85); display: none;
+  .lightbox { position: fixed; inset: 0; background: rgb(0 0 0 / .88); display: none;
     align-items: center; justify-content: center; z-index: 20; cursor: zoom-out; padding: 16px; }
   .lightbox.show { display: flex; }
   .lightbox img { max-width: 100%; max-height: 100%; }
@@ -97,88 +137,53 @@
     .item { grid-template-columns: 1fr; }
     .setup, .answers { grid-template-columns: 1fr; }
     .rep .hide-sm { display: none; }
+    .rep .cap { min-width: 0; }
   }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 <header>
   <div class="wrap bar">
-    <h1>🎨 Lietuvos dailė – testas 2026</h1>
-    <nav>
-      <button data-tab="train" class="active">Treniruotė</button>
-      <button data-tab="test">Testavimas</button>
+    <h1>Lietuvos dailė – testas 2026</h1>
+    <nav aria-label="Skiltys">
+      <button data-tab="train" class="active" aria-pressed="true">Treniruotė</button>
+      <button data-tab="practice" aria-pressed="false">Praktika</button>
+      <button data-tab="test" aria-pressed="false">Testavimas</button>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
-  <!-- TRENIRUOTĖ -->
   <section id="train">
     <h2>Treniruotė</h2>
-    <p class="muted">Visi kūriniai: autorius ir pavadinimas. Teste reikės parašyti autoriaus pavardę ir kūrinio pavadinimą.</p>
+    <p class="muted">Visi kūriniai su autoriumi, pavadinimu ir vieta. Praktikoje ir teste reikės įrašyti vardo raidę, pavardę, kūrinio pavadinimą ir – kur nurodyta – vietą.</p>
     <div class="tools">
-      <input type="text" id="filter" placeholder="Ieškoti autoriaus ar pavadinimo…">
-      <label style="display:flex;gap:8px;align-items:center;margin:0;font-weight:500">
-        <input type="checkbox" id="hideAnswers"> Paslėpti atsakymus (spausk, kad atidengtum)
-      </label>
+      <input type="text" id="filter" placeholder="Ieškoti autoriaus ar pavadinimo…" aria-label="Ieškoti autoriaus ar pavadinimo">
+      <label class="toggle"><input type="checkbox" id="hideAnswers"> Paslėpti atsakymus (spausk, kad atidengtum)</label>
     </div>
     <div class="list" id="list"></div>
   </section>
 
-  <!-- TESTAVIMAS -->
-  <section id="test" hidden>
-    <div id="testSetup" class="card">
-      <h2>Testavimas</h2>
-      <p class="muted">Pasirink kūrinių intervalą ir kiek klausimų nori. Kūriniai bus rodomi atsitiktine tvarka ir nesikartos.
-        Už teisingą pavardę – 1 taškas, už teisingą pavadinimą – 1 taškas (su nedidele rašybos klaida – 0,5 taško).</p>
-      <div class="setup">
-        <div><label for="from">Nuo kūrinio Nr.</label><input type="number" id="from" min="1"></div>
-        <div><label for="to">Iki kūrinio Nr.</label><input type="number" id="to" min="1"></div>
-        <div><label for="count">Kiek klausimų</label><input type="number" id="count" min="1"></div>
-      </div>
-      <p class="muted" id="setupHint"></p>
-      <button class="btn" id="start">Pradėti testą</button>
-    </div>
-
-    <div id="testRun" class="card" hidden>
-      <div class="progress"><div id="prog"></div></div>
-      <div class="qhead">
-        <strong id="qnum"></strong>
-        <span class="muted">Taškai: <b id="pts">0</b></span>
-      </div>
-      <div class="qimg" id="qimg"></div>
-      <div class="answers">
-        <div>
-          <label for="ansAuthor">Autoriaus pavardė</label>
-          <input type="text" id="ansAuthor" autocomplete="off" spellcheck="false">
-          <div id="fbAuthor"></div>
-        </div>
-        <div>
-          <label for="ansTitle">Kūrinio pavadinimas</label>
-          <input type="text" id="ansTitle" autocomplete="off" spellcheck="false">
-          <div id="fbTitle"></div>
-        </div>
-      </div>
-      <div class="actions">
-        <button class="btn" id="check">Tikrinti</button>
-        <button class="btn" id="next" hidden>Kitas →</button>
-        <button class="btn ghost" id="finish">Baigti testą</button>
-      </div>
-    </div>
-
-    <div id="report" class="card" hidden></div>
-  </section>
+  <section id="practice" hidden></section>
+  <section id="test" hidden></section>
 </main>
 
 <div class="lightbox" id="lightbox"><img alt=""></div>
 
 <script src="works.js"></script>
+<script src="grade.js"></script>
 <script>
-const WORKS = window.WORKS;
+const WORKS = window.WORKS, G = window.Grade;
+G.prepare(WORKS);
 const N = WORKS.length;
+const MAX_TRIES = 4;                       // praktikoje atsakymas parodomas po 4-o neteisingo bandymo
 const EXTS = ["jpg", "jpeg", "png", "webp", "JPG", "PNG"];
+const $ = id => document.getElementById(id);
 const pad = n => String(n).padStart(2, "0");
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = x => String(Math.round(x * 100) / 100).replace(".", ",");
+const sum = a => a.reduce((x, y) => x + y, 0);
 
 /* ---------- Nuotraukos ---------- */
 function oneImage(base, label) {
@@ -196,13 +201,13 @@ function oneImage(base, label) {
     img.src = `${base}.${EXTS[i++]}`;
   };
   img.onerror = tryNext;
-  img.onclick = () => { const lb = document.getElementById("lightbox"); lb.querySelector("img").src = img.src; lb.classList.add("show"); };
+  img.onclick = () => { const lb = $("lightbox"); lb.querySelector("img").src = img.src; lb.classList.add("show"); };
   box.appendChild(img);
   tryNext();
   return box;
 }
 function picture(idx) {
-  // idx – 0-based. Pagrindinė nuotrauka img/NN.jpg, papildomos img/NN-2.jpg, img/NN-3.jpg …
+  // idx – nuo 0. Pagrindinė nuotrauka img/NN.jpg, papildomos img/NN-2.jpg, img/NN-3.jpg …
   const wrap = document.createElement("div");
   const extra = WORKS[idx].extra || 0;
   if (extra) wrap.className = "multi";
@@ -211,29 +216,34 @@ function picture(idx) {
   for (let k = 2; k <= extra + 1; k++) wrap.appendChild(oneImage(`img/${pad(idx + 1)}-${k}`, label));
   return wrap;
 }
-document.getElementById("lightbox").onclick = e => e.currentTarget.classList.remove("show");
+$("lightbox").onclick = e => e.currentTarget.classList.remove("show");
+document.addEventListener("keydown", e => { if (e.key === "Escape") $("lightbox").classList.remove("show"); });
 
-/* ---------- Skirtukai ---------- */
+/* ---------- Skiltys ---------- */
+const TABS = ["train", "practice", "test"];
 document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("active", x === b));
-  document.getElementById("train").hidden = b.dataset.tab !== "train";
-  document.getElementById("test").hidden = b.dataset.tab !== "test";
+  document.querySelectorAll("nav button").forEach(x => {
+    x.classList.toggle("active", x === b);
+    x.setAttribute("aria-pressed", x === b);
+  });
+  TABS.forEach(t => $(t).hidden = t !== b.dataset.tab);
   window.scrollTo(0, 0);
 });
 
 /* ---------- Treniruotė ---------- */
-const list = document.getElementById("list");
+const list = $("list");
 WORKS.forEach((w, i) => {
   const card = document.createElement("div");
   card.className = "card item";
-  card.dataset.search = norm(w.author + " " + w.title + " " + w.aliases.join(" "));
+  card.dataset.search = G.norm([w.author, w.title, w.accept.join(" "), w.place ? w.place.name : ""].join(" "));
   card.appendChild(picture(i));
   const txt = document.createElement("div");
   txt.innerHTML = `
     <div class="num">Nr. ${i + 1}</div>
     <div class="answer">
       <div class="author">${esc(w.author)}</div>
-      <div class="title">„${esc(w.title.replace(/[„“”"]/g, ""))}“</div>
+      <div class="title">${esc(w.title)}</div>
+      ${w.place ? `<div class="place"><span class="muted">Kur:</span> ${esc(w.place.name)}</div>` : ""}
     </div>
     <details><summary>Daugiau (nebus teste)</summary>
       ${w.year ? `<div><b>Metai:</b> ${esc(w.year)}</div>` : ""}
@@ -243,186 +253,455 @@ WORKS.forEach((w, i) => {
   card.appendChild(txt);
   list.appendChild(card);
 });
-document.getElementById("filter").oninput = e => {
-  const q = norm(e.target.value);
-  list.querySelectorAll(".item").forEach(c => c.hidden = q && !c.dataset.search.includes(q));
+$("filter").oninput = e => {
+  const q = G.norm(e.target.value);
+  list.querySelectorAll(".item").forEach(c => c.hidden = !!q && !c.dataset.search.includes(q));
 };
-document.getElementById("hideAnswers").onchange = e => {
+$("hideAnswers").onchange = e => {
   list.classList.toggle("hidden-answers", e.target.checked);
   list.querySelectorAll(".answer").forEach(a => a.classList.remove("reveal"));
 };
 
-/* ---------- Atsakymų tikrinimas ---------- */
-function norm(s) {
-  return String(s).toLowerCase()
-    .normalize("NFD").replace(/[̀-ͯ]/g, "")    // lietuviškos raidės -> lotyniškos
-    .replace(/šv\.|sv\./g, "sv ")
-    .replace(/[^a-z0-9]+/g, " ").trim();
+/* ---------- Atsitiktinė tvarka ----------
+   Paprastas maišymas dažnai sustato to paties autoriaus kūrinius greta ir kartais primena
+   ankstesnį bandymą. Todėl sugeneruojama daug atsitiktinių eilių ir paimama ta, kurioje
+   to paties autoriaus kūriniai nėra šalia ir kuri mažiausiai panaši į paskutinius bandymus. */
+const HKEY = "dailes-testas-eiles";
+let hist = [];
+try {
+  const h = JSON.parse(localStorage.getItem(HKEY) || "[]");
+  if (Array.isArray(h))
+    hist = h.filter(q => Array.isArray(q) && q.every(x => Number.isInteger(x) && x >= 0 && x < N)).slice(-6);
+} catch (e) { /* saugykla nepasiekiama – dirbam be istorijos */ }
+function remember(q) {
+  hist.push(q.slice());
+  hist = hist.slice(-6);
+  try { localStorage.setItem(HKEY, JSON.stringify(hist)); } catch (e) { /* nieko tokio */ }
 }
-function lev(a, b) {
-  const m = a.length, n = b.length;
-  if (!m) return n; if (!n) return m;
-  let prev = Array.from({ length: n + 1 }, (_, j) => j);
-  for (let i = 1; i <= m; i++) {
-    const cur = [i];
-    for (let j = 1; j <= n; j++)
-      cur[j] = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
-    prev = cur;
-  }
-  return prev[n];
-}
-const sim = (a, b) => 1 - lev(a, b) / Math.max(a.length, b.length, 1);
-
-// grąžina 1 (teisinga), 0.5 (beveik – rašybos klaida), 0 (neteisinga)
-function grade(answer, options, tokenMode) {
-  const a = norm(answer);
-  if (!a) return 0;
-  const opts = options.map(norm);
-  const cands = tokenMode ? [a, ...a.split(" ")] : [a];       // pavardę galima rašyti su vardu
-  if (tokenMode) opts.push(...opts.flatMap(o => o.split(" ")).filter(o => o.length > 3));
-  let best = 0;
-  for (const c of cands) for (const o of opts) {
-    if (c === o) return 1;
-    best = Math.max(best, sim(c, o));
-  }
-  return best >= 0.8 ? 0.5 : 0;
-}
-function fbHtml(score, correct) {
-  if (score === 1) return `<div class="fb ok">✓ Teisingai: <b>${esc(correct)}</b></div>`;
-  if (score === 0.5) return `<div class="fb half">≈ Beveik (0,5 t.). Teisingai: <b>${esc(correct)}</b></div>`;
-  return `<div class="fb bad">✗ Neteisingai. Teisingai: <b>${esc(correct)}</b></div>`;
-}
-const tag = s => s === 1 ? '<span class="tag ok">1</span>' : s === 0.5 ? '<span class="tag half">0,5</span>' : '<span class="tag bad">0</span>';
-
-/* ---------- Testas ---------- */
-const $ = id => document.getElementById(id);
-const fromEl = $("from"), toEl = $("to"), countEl = $("count");
-fromEl.max = toEl.max = countEl.max = N;
-fromEl.value = 1; toEl.value = N; countEl.value = N;
-
-function clampSetup() {
-  let f = Math.min(Math.max(parseInt(fromEl.value) || 1, 1), N);
-  let t = Math.min(Math.max(parseInt(toEl.value) || N, 1), N);
-  if (f > t) [f, t] = [t, f];
-  const span = t - f + 1;
-  let c = Math.min(Math.max(parseInt(countEl.value) || span, 1), span);
-  return { f, t, c, span };
-}
-function updateHint() {
-  const { f, t, c, span } = clampSetup();
-  countEl.max = span;
-  $("setupHint").textContent = `Bus klausiama ${c} iš ${span} kūrinių (Nr. ${f}–${t}). Maksimalus balas: ${c * 2}.`;
-}
-[fromEl, toEl].forEach(el => el.oninput = () => { const { span } = clampSetup(); countEl.value = span; updateHint(); });
-countEl.oninput = updateHint;
-updateHint();
-
-let queue = [], pos = 0, results = [], checked = false;
+const AUTHOR_KEYS = WORKS.map(w => G.norm(w.last));
+const authorKey = i => AUTHOR_KEYS[i];
 
 function shuffle(a) {
-  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
   return a;
 }
+function makeScorer() {                      // grąžina funkciją: kuo mažesnis balas, tuo geresnė eilė
+  const H = hist.map((h, k) => ({
+    h, w: Math.max(1, 3 - (hist.length - 1 - k)),              // paskutinis bandymas sveria daugiausia
+    at: new Map(h.map((x, i) => [x, i])), head: h.slice(0, 3)
+  }));
+  return q => {
+    let s = 0;
+    for (let i = 0; i < q.length; i++)
+      for (let d = 1; d <= 3 && i + d < q.length; d++)
+        if (authorKey(q[i]) === authorKey(q[i + d])) s += d === 1 ? 10000 : d === 2 ? 60 : 15;
+    for (const { h, w, at, head } of H) {
+      for (let i = 0; i < q.length; i++) {
+        const p = at.get(q[i]);
+        if (p === undefined) continue;
+        if (p === i) s += 4 * w; else if (Math.abs(p - i) === 1) s += w;        // ta pati vieta eilėje
+        if (i + 1 < q.length) {
+          if (h[p + 1] === q[i + 1]) s += 8 * w;                                // ta pati pora ta pačia tvarka
+          else if (p > 0 && h[p - 1] === q[i + 1]) s += 5 * w;                  // ta pati pora atvirkščiai
+        }
+      }
+      if (h[0] === q[0]) s += 20 * w;                                           // ta pati pradžia
+      for (let i = 0; i < 3 && i < q.length; i++) if (head.includes(q[i])) s += 3 * w;
+    }
+    return s;
+  };
+}
+function makeQueue(pool, count) {
+  let chosen = pool.slice();
+  if (count < chosen.length) {
+    // Kai klausiama tik dalies kūrinių: pirmiausia tie, kurių per paskutinius bandymus nebuvo,
+    // tada – seniausiai matyti (su trupučiu atsitiktinumo, kad nesikartotų tie patys rinkiniai).
+    const seen = new Map();
+    hist.slice(-4).forEach((h, k) => h.forEach(x => seen.set(x, (seen.get(x) || 0) + k + 1)));
+    const key = new Map(chosen.map(x => [x, seen.has(x) ? seen.get(x) + Math.random() * 2.5 : -Math.random()]));
+    chosen = chosen.sort((a, b) => key.get(a) - key.get(b)).slice(0, count);
+  }
+  const score = makeScorer();
+  let best = chosen.slice(), bestScore = Infinity;
+  for (let t = 0; t < 60 && bestScore > 0; t++) {              // keli atsitiktiniai startai
+    const cand = shuffle(chosen.slice()), sc = score(cand);
+    if (sc < bestScore) { best = cand; bestScore = sc; }
+  }
+  for (let t = 0; t < 3000 && bestScore > 0; t++) {            // gerinimas: sukeičiami du atsitiktiniai kūriniai
+    const i = Math.floor(Math.random() * best.length), j = Math.floor(Math.random() * best.length);
+    if (i === j) continue;
+    [best[i], best[j]] = [best[j], best[i]];
+    const sc = score(best);
+    if (sc <= bestScore) bestScore = sc; else [best[i], best[j]] = [best[j], best[i]];
+  }
+  remember(best);
+  return best;                               // kiekvienas kūrinys – tik vieną kartą
+}
 
-$("start").onclick = () => {
-  const { f, t, c } = clampSetup();
-  const pool = [];
-  for (let i = f - 1; i <= t - 1; i++) pool.push(i);
-  queue = shuffle(pool).slice(0, c);          // kiekvienas kūrinys – tik vieną kartą
-  pos = 0; results = [];
-  $("testSetup").hidden = true; $("report").hidden = true; $("testRun").hidden = false;
-  showQuestion();
+/* ---------- Atsakymų rodymas ---------- */
+const CLS = s => s === 1 ? "ok" : s === 0 ? "bad" : "half";
+const ICON = s => s === 1 ? "✓" : s === 0 ? "✗" : "≈";
+const tag = s => `<span class="tag ${CLS(s)}">${fmt(s)}</span>`;
+function answerLine(score, correct) {        // su teisingu atsakymu
+  const lead = score === 1 ? "Teisingai:" : score === 0 ? "Neteisingai. Teisingai:" : "Ne visai. Teisingai:";
+  return `<div class="fb ${CLS(score)}">${ICON(score)} ${lead} <b>${esc(correct)}</b></div>`;
+}
+function hintLine(score, what) {             // be teisingo atsakymo (praktikai)
+  const text = score === 1 ? "teisingai" : score === 0 ? "neteisingai" : "beveik – netikslu arba yra rašybos klaida";
+  return `<div class="fb ${CLS(score)}">${ICON(score)} ${what}: ${text}</div>`;
+}
+const authorScore = sc => {
+  const init = sum(sc.init) / sc.init.length;
+  return init === 1 && sc.surname === 1 ? 1 : init === 0 && sc.surname === 0 ? 0 : 0.5;
 };
 
-function showQuestion() {
-  checked = false;
-  const idx = queue[pos];
-  $("qnum").textContent = `Klausimas ${pos + 1} iš ${queue.length}`;
-  $("prog").style.width = (pos / queue.length * 100) + "%";
-  $("pts").textContent = fmt(total());
-  const q = $("qimg"); q.innerHTML = ""; q.appendChild(picture(idx));
-  ["ansAuthor", "ansTitle"].forEach(id => { $(id).value = ""; $(id).disabled = false; });
-  $("fbAuthor").innerHTML = $("fbTitle").innerHTML = "";
-  $("check").hidden = false; $("next").hidden = true;
-  $("ansAuthor").focus();
-}
+/* ---------- Praktika ir testas (tas pats variklis, skiriasi tik tikrinimas) ---------- */
+function createQuiz(mode) {
+  const isTest = mode === "test";
+  const root = $(mode), id = s => mode + "-" + s, el = s => $(id(s));
+  const maxFirst = Math.max(...WORKS.map(w => w.first.length));
+  const T = isTest ? {
+    h: "Testavimas", start: "Pradėti testą", finish: "Baigti testą", last: "Rodyti ataskaitą",
+    intro: "Pasirink kūrinių intervalą ir klausimų skaičių. Kūriniai rodomi atsitiktine tvarka ir nesikartoja. " +
+      "Po 1 tašką už vardo raidę (-es), pavardę, pavadinimą ir vietą (jei jos klausiama); už nedidelę rašybos klaidą – 0,5 taško."
+  } : {
+    h: "Praktika", start: "Pradėti praktiką", finish: "Baigti praktiką", last: "Rodyti rezultatus",
+    intro: "Kaip testas, tik suklydus galima bandyti dar kartą. Po pirmų trijų neteisingų bandymų atsakymo nerodo – " +
+      "parodo tik po ketvirto. Kūriniai rodomi atsitiktine tvarka ir nesikartoja."
+  };
+  const textInput = (name, cap) =>
+    `<input type="text" id="${id(name)}" autocomplete="off" autocorrect="off" autocapitalize="${cap}" spellcheck="false">`;
 
-function check() {
-  if (checked) return;
-  checked = true;
-  const idx = queue[pos], w = WORKS[idx];
-  const a = $("ansAuthor").value.trim(), t = $("ansTitle").value.trim();
-  const sa = grade(a, w.surnames, true);
-  const st = grade(t, [w.title, ...w.aliases], false);
-  results.push({ idx, a, t, sa, st });
-  $("fbAuthor").innerHTML = fbHtml(sa, w.author);
-  $("fbTitle").innerHTML = fbHtml(st, w.title);
-  ["ansAuthor", "ansTitle"].forEach(id => $(id).disabled = true);
-  $("pts").textContent = fmt(total());
-  $("check").hidden = true; $("next").hidden = false;
-  $("next").textContent = pos + 1 < queue.length ? "Kitas →" : "Rodyti ataskaitą";
-  $("next").focus();
-}
-function next() {
-  pos++;
-  if (pos < queue.length) showQuestion(); else showReport();
-}
-$("check").onclick = check;
-$("next").onclick = next;
-$("ansAuthor").onkeydown = e => { if (e.key === "Enter") $("ansTitle").focus(); };
-$("ansTitle").onkeydown = e => { if (e.key === "Enter") check(); };
-$("finish").onclick = () => {
-  if (!results.length && !confirm("Dar neatsakei nė į vieną klausimą. Baigti?")) return;
-  showReport();
-};
-
-const total = () => results.reduce((s, r) => s + r.sa + r.st, 0);
-const fmt = x => String(x).replace(".", ",");
-
-function showReport() {
-  $("testRun").hidden = true;
-  const rep = $("report"); rep.hidden = false;
-  const max = results.length * 2, sum = total();
-  const pct = max ? Math.round(sum / max * 100) : 0;
-  const pa = results.reduce((s, r) => s + r.sa, 0), pt = results.reduce((s, r) => s + r.st, 0);
-  const grade10 = max ? Math.max(1, Math.round(sum / max * 10)) : "–";
-  const unanswered = queue.length - results.length;
-  rep.innerHTML = `
-    <h2>Ataskaita</h2>
-    <div class="score">
-      <div class="tile"><span class="muted">Taškai</span><b>${fmt(sum)} / ${max}</b></div>
-      <div class="tile"><span class="muted">Procentai</span><b>${pct}%</b></div>
-      <div class="tile"><span class="muted">Pažymys (apytikslis)</span><b>${grade10}</b></div>
-      <div class="tile"><span class="muted">Autoriai / pavadinimai</span><b>${fmt(pa)} / ${fmt(pt)}</b></div>
+  root.innerHTML = `
+    <div class="card" id="${id("setup")}">
+      <h2>${T.h}</h2>
+      <p class="muted">${T.intro}</p>
+      <div class="setup">
+        <div><label for="${id("from")}">Nuo kūrinio Nr.</label><input type="number" inputmode="numeric" id="${id("from")}" min="1" max="${N}" value="1"></div>
+        <div><label for="${id("to")}">Iki kūrinio Nr.</label><input type="number" inputmode="numeric" id="${id("to")}" min="1" max="${N}" value="${N}"></div>
+        <div><label for="${id("count")}">Kiek klausimų</label><input type="number" inputmode="numeric" id="${id("count")}" min="1" max="${N}" value="${N}"></div>
+      </div>
+      <p class="muted" id="${id("hint")}"></p>
+      <button class="btn" id="${id("start")}">${T.start}</button>
     </div>
-    ${unanswered ? `<p class="muted">Testas baigtas anksčiau: neatsakyta ${unanswered} klausim${unanswered === 1 ? "o" : "ų"}.</p>` : ""}
-    <div style="overflow-x:auto"><table class="rep">
-      <thead><tr><th>#</th><th class="hide-sm">Kūrinys</th><th>Tavo atsakymas</th><th>Teisingas atsakymas</th><th>Taškai</th></tr></thead>
-      <tbody></tbody></table></div>
-    <div class="actions" style="margin-top:18px">
-      <button class="btn" id="again">Kartoti su tais pačiais nustatymais</button>
-      <button class="btn ghost" id="retryWrong">Kartoti tik klaidas</button>
-      <button class="btn ghost" id="newTest">Naujas testas</button>
-    </div>`;
-  const tb = rep.querySelector("tbody");
-  results.forEach((r, k) => {
-    const w = WORKS[r.idx];
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${k + 1}<div class="muted">Nr. ${r.idx + 1}</div></td><td class="hide-sm"></td>
-      <td>${tag(r.sa)} ${esc(r.a || "—")}<br>${tag(r.st)} ${esc(r.t || "—")}</td>
-      <td><b>${esc(w.author)}</b><br>${esc(w.title)}</td>
-      <td><b>${fmt(r.sa + r.st)}</b> / 2</td>`;
-    tr.children[1].appendChild(picture(r.idx));
-    tb.appendChild(tr);
+
+    <div class="card" id="${id("run")}" hidden>
+      <div class="progress"><div id="${id("prog")}"></div></div>
+      <div class="qhead"><strong id="${id("qnum")}"></strong><span class="muted" id="${id("status")}"></span></div>
+      <div class="qimg" id="${id("qimg")}"></div>
+      <div class="answers">
+        <div class="field">
+          <div class="author-row">
+            <div class="sub">
+              <span class="lab" id="${id("initlab")}">Vardo raidė</span>
+              <div class="initials" role="group" aria-labelledby="${id("initlab")}">
+                ${Array.from({ length: maxFirst }, (_, i) =>
+                  `<input type="text" id="${id("init" + i)}" maxlength="1" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false" aria-label="${i + 1}-ojo vardo pirmoji raidė">`).join("")}
+              </div>
+            </div>
+            <div class="sub grow">
+              <label for="${id("surname")}">Pavardė</label>
+              ${textInput("surname", "words")}
+            </div>
+          </div>
+          <div id="${id("fb-author")}"></div>
+        </div>
+        <div class="field">
+          <label for="${id("title")}">Kūrinio pavadinimas</label>
+          ${textInput("title", "sentences")}
+          <div id="${id("fb-title")}"></div>
+        </div>
+        <div class="field" id="${id("placefield")}">
+          <label for="${id("place")}">Kur</label>
+          ${textInput("place", "words")}
+          <div id="${id("fb-place")}"></div>
+        </div>
+      </div>
+      <div class="msg" id="${id("msg")}" role="status"></div>
+      <div class="actions">
+        <button class="btn" id="${id("check")}">Tikrinti</button>
+        <button class="btn" id="${id("next")}" hidden>Kitas →</button>
+        <button class="btn ghost" id="${id("finish")}">${T.finish}</button>
+      </div>
+    </div>
+
+    <div class="card" id="${id("report")}" hidden></div>`;
+
+  const inits = Array.from({ length: maxFirst }, (_, i) => el("init" + i));
+  const surname = el("surname"), title = el("title"), place = el("place");
+  const fromEl = el("from"), toEl = el("to"), countEl = el("count");
+  let queue = [], pos = 0, results = [], done = false, wrong = 0, lastSetup = null;
+
+  const work = () => WORKS[queue[pos]];
+  const fields = () => inits.slice(0, work().first.length).concat([surname, title], work().place ? [place] : []);
+  const total = () => sum(results.map(r => G.points(r.sc).total));
+
+  /* --- nustatymai --- */
+  function clampSetup() {
+    let f = Math.min(Math.max(parseInt(fromEl.value) || 1, 1), N);
+    let t = Math.min(Math.max(parseInt(toEl.value) || N, 1), N);
+    if (f > t) [f, t] = [t, f];
+    const span = t - f + 1;
+    const c = Math.min(Math.max(parseInt(countEl.value) || span, 1), span);
+    return { f, t, c, span };
+  }
+  function updateHint() {
+    const { f, t, c, span } = clampSetup();
+    countEl.max = span;
+    el("hint").textContent = `Bus klausiama ${c} iš ${span} kūrinių (Nr. ${f}–${t}).`;
+  }
+  [fromEl, toEl].forEach(x => x.oninput = () => { countEl.value = clampSetup().span; updateHint(); });
+  countEl.oninput = updateHint;
+  updateHint();
+
+  function begin(pool, count) {
+    queue = makeQueue(pool, count);
+    pos = 0; results = [];
+    el("setup").hidden = true; el("report").hidden = true; el("run").hidden = false;
+    showQuestion();
+    window.scrollTo(0, 0);
+  }
+  el("start").onclick = () => {
+    const { f, t, c } = clampSetup();
+    lastSetup = { pool: Array.from({ length: t - f + 1 }, (_, i) => f - 1 + i), count: c };
+    begin(lastSetup.pool, lastSetup.count);
+  };
+
+  /* --- klausimas --- */
+  function showStatus() {
+    el("status").innerHTML = isTest
+      ? `Taškai: <b>${fmt(total())}</b>`
+      : `Bandymas <b>${Math.min(wrong + 1, MAX_TRIES)}</b> iš ${MAX_TRIES}`;
+  }
+  function showQuestion() {
+    done = false; wrong = 0;
+    const w = work();
+    el("qnum").textContent = `Klausimas ${pos + 1} iš ${queue.length}`;
+    el("prog").style.width = (pos / queue.length * 100) + "%";
+    const q = el("qimg");
+    q.innerHTML = "";
+    q.appendChild(picture(queue[pos]));
+    inits.forEach((b, i) => b.hidden = i >= w.first.length);
+    el("initlab").textContent = w.first.length > 1 ? "Vardų raidės" : "Vardo raidė";
+    el("placefield").hidden = !w.place;
+    inits.concat([surname, title, place]).forEach(x => { x.value = ""; x.disabled = false; x.className = ""; });
+    ["fb-author", "fb-title", "fb-place", "msg"].forEach(k => el(k).innerHTML = "");
+    el("check").hidden = false; el("next").hidden = true;
+    showStatus();
+    inits[0].focus();
+  }
+  const readAnswers = w => ({
+    init: w.first.map((_, i) => inits[i].value.trim()),
+    surname: surname.value.trim(), title: title.value.trim(),
+    place: w.place ? place.value.trim() : ""
   });
-  const wrong = results.filter(r => r.sa + r.st < 2).map(r => r.idx);
-  const rw = rep.querySelector("#retryWrong");
-  if (!wrong.length) rw.hidden = true;
-  rw.onclick = () => { queue = shuffle(wrong.slice()); pos = 0; results = []; rep.hidden = true; $("testRun").hidden = false; showQuestion(); };
-  rep.querySelector("#again").onclick = () => $("start").click();
-  rep.querySelector("#newTest").onclick = () => { rep.hidden = true; $("testSetup").hidden = false; };
-  window.scrollTo(0, 0);
+  function paint(w, sc) {                    // nuspalvina langelius pagal tai, kas teisinga
+    w.first.forEach((_, i) => inits[i].className = "is-" + CLS(sc.init[i]));
+    surname.className = "is-" + CLS(sc.surname);
+    title.className = "is-" + CLS(sc.title);
+    if (w.place) place.className = "is-" + CLS(sc.place);
+  }
+  function revealAnswers(w, sc) {
+    el("fb-author").innerHTML = answerLine(authorScore(sc), w.author);
+    el("fb-title").innerHTML = answerLine(sc.title, w.title);
+    if (w.place) el("fb-place").innerHTML = answerLine(sc.place, w.place.name);
+    fields().forEach(x => x.disabled = true);
+  }
+  function hintAnswers(w, sc) {              // praktika: kas blogai, bet be atsakymo
+    const a = [];
+    const initOk = sc.init.every(x => x === 1);
+    if (initOk && sc.surname === 1) a.push(hintLine(1, "Autorius"));
+    else {
+      if (!initOk) a.push(hintLine(0, w.first.length > 1 ? "Vardų raidės (raudonas langelis)" : "Vardo raidė"));
+      if (sc.surname !== 1) a.push(hintLine(sc.surname, "Pavardė"));
+    }
+    el("fb-author").innerHTML = a.join("");
+    el("fb-title").innerHTML = hintLine(sc.title, "Pavadinimas");
+    if (w.place) el("fb-place").innerHTML = hintLine(sc.place, "Vieta");
+    fields().forEach(x => { if (x.classList.contains("is-ok")) x.disabled = true; });
+  }
+  function questionDone() {
+    done = true;
+    el("check").hidden = true;
+    const n = el("next");
+    n.hidden = false;
+    n.textContent = pos + 1 < queue.length ? "Kitas →" : T.last;
+    showStatus();
+    n.focus();
+  }
+
+  function check() {
+    if (done) return;
+    const w = work(), ans = readAnswers(w), sc = G.gradeAll(w, ans);
+    paint(w, sc);
+    if (isTest) {
+      const p = G.points(sc);
+      results.push({ idx: queue[pos], ans, sc });
+      revealAnswers(w, sc);
+      el("msg").innerHTML = `<div class="fb ${p.total === p.max ? "ok" : p.total ? "half" : "bad"}">Šis klausimas: <b>${fmt(p.total)}</b> iš ${p.max} taškų</div>`;
+      questionDone();
+      return;
+    }
+    if (G.allRight(sc)) {
+      results.push({ idx: queue[pos], tries: wrong + 1, solved: true });
+      revealAnswers(w, sc);
+      el("msg").innerHTML = `<div class="fb ok">✓ Teisingai iš ${wrong + 1} karto!</div>`;
+      questionDone();
+    } else if (++wrong >= MAX_TRIES) {
+      results.push({ idx: queue[pos], tries: MAX_TRIES, solved: false });
+      revealAnswers(w, sc);
+      el("msg").innerHTML = `<div class="fb bad">Ketvirtas neteisingas bandymas – teisingas atsakymas parodytas. Įsimink ir eik toliau.</div>`;
+      questionDone();
+    } else {
+      hintAnswers(w, sc);
+      const left = MAX_TRIES - wrong;
+      el("msg").innerHTML = `<div class="fb bad">Dar ne viskas teisinga – pataisyk pažymėtus langelius ir bandyk dar kartą. ` +
+        `${left === 1 ? "Liko paskutinis bandymas." : `Liko bandymų: ${left}.`}</div>`;
+      showStatus();
+      const first = fields().find(x => !x.disabled);
+      if (first) { first.focus(); first.select(); }
+    }
+  }
+  function next() {
+    pos++;
+    if (pos < queue.length) { showQuestion(); window.scrollTo(0, 0); } else showReport();
+  }
+  el("check").onclick = check;
+  el("next").onclick = next;
+  el("finish").onclick = () => {
+    if (results.length) showReport();
+    else { el("run").hidden = true; el("setup").hidden = false; }
+  };
+
+  /* --- klaviatūra --- */
+  inits.concat([surname, title, place]).forEach(inp => {
+    inp.addEventListener("keydown", e => {
+      if (e.key !== "Enter" || e.isComposing) return;
+      e.preventDefault();
+      const open = fields().filter(x => !x.disabled);
+      const nextEmpty = open.slice(open.indexOf(inp) + 1).find(x => !x.value.trim());
+      if (nextEmpty) nextEmpty.focus(); else check();
+    });
+    inp.addEventListener("input", () => {    // taisant langelį nuimama klaidos spalva
+      inp.classList.remove("is-bad", "is-half");
+    });
+  });
+  inits.forEach((b, i) => {
+    b.addEventListener("focus", () => b.select());
+    b.addEventListener("input", () => {      // įrašius raidę – iškart į kitą langelį
+      if (!b.value) return;
+      const fs = fields(), nx = fs.slice(fs.indexOf(b) + 1).find(x => !x.disabled);
+      if (nx) nx.focus();
+    });
+    b.addEventListener("keydown", e => {
+      if (e.key === "Backspace" && !b.value && i > 0 && !inits[i - 1].disabled) inits[i - 1].focus();
+    });
+  });
+
+  /* --- ataskaita --- */
+  const correctCell = w => `<b>${esc(w.author)}</b><br>${esc(w.title)}` +
+    (w.place ? `<br><span class="muted">Kur:</span> ${esc(w.place.name)}` : "");
+  const rowHead = (k, idx) => `<td>${k + 1}<div class="muted">Nr. ${idx + 1}</div></td><td class="hide-sm"></td>`;
+  const leftNote = () => {
+    const n = queue.length - results.length;
+    return n ? `<p class="muted">Baigta anksčiau: neatsakytų klausimų – ${n}.</p>` : "";
+  };
+
+  function showReport() {
+    el("run").hidden = true;
+    const rep = el("report");
+    rep.hidden = false;
+    const hard = isTest ? testReport(rep) : practiceReport(rep);
+    rep.querySelectorAll("tbody tr").forEach((tr, k) => tr.children[1].appendChild(picture(results[k].idx)));
+    const again = rep.querySelector("[data-act=again]"), retry = rep.querySelector("[data-act=retry]");
+    again.hidden = !lastSetup;
+    again.onclick = () => begin(lastSetup.pool, lastSetup.count);
+    retry.hidden = !hard.length;
+    retry.onclick = () => begin(hard, hard.length);
+    rep.querySelector("[data-act=new]").onclick = () => { rep.hidden = true; el("setup").hidden = false; window.scrollTo(0, 0); };
+    window.scrollTo(0, 0);
+  }
+
+  function testReport(rep) {
+    const P = results.map(r => G.points(r.sc));
+    const tot = sum(P.map(p => p.total)), max = sum(P.map(p => p.max));
+    const withPlace = P.filter(p => p.hasPlace);
+    const parts = [
+      ["Vardo raidės", sum(P.map(p => p.init)), P.length],
+      ["Pavardės", sum(P.map(p => p.surname)), P.length],
+      ["Pavadinimai", sum(P.map(p => p.title)), P.length]
+    ];
+    if (withPlace.length) parts.push(["Kur", sum(withPlace.map(p => p.place)), withPlace.length]);
+    const ansRow = (cap, score, text) =>
+      `<div class="ans"><span class="cap">${cap}</span>${tag(score)}<span>${esc(text || "—")}</span></div>`;
+
+    rep.innerHTML = `
+      <h2>Ataskaita</h2>
+      <div class="score">
+        <div class="tile"><span class="muted">Taškai</span><b>${fmt(tot)} / ${max}</b></div>
+        <div class="tile"><span class="muted">Procentai</span><b>${max ? Math.round(tot / max * 100) : 0}%</b></div>
+        <div class="tile"><span class="muted">Pažymys (apytikslis)</span><b>${max ? Math.max(1, Math.round(tot / max * 10)) : "–"}</b></div>
+      </div>
+      ${leftNote()}
+      <h3>Taškai pagal dalis</h3>
+      <div class="parts">${parts.map(([name, got, of]) => `
+        <div><div class="part-top"><span>${name}</span><b>${fmt(got)} / ${of}</b></div>
+          <div class="meter"><div style="width:${of ? got / of * 100 : 0}%"></div></div></div>`).join("")}
+      </div>
+      <div class="scroll"><table class="rep">
+        <thead><tr><th>#</th><th class="hide-sm">Kūrinys</th><th>Tavo atsakymas</th><th>Teisingas atsakymas</th><th>Taškai</th></tr></thead>
+        <tbody>${results.map((r, k) => {
+          const w = WORKS[r.idx], p = P[k];
+          return `<tr>${rowHead(k, r.idx)}
+            <td>${ansRow("Vardas", p.init, r.ans.init.filter(Boolean).map(x => x.toUpperCase() + ".").join(" "))}
+              ${ansRow("Pavardė", p.surname, r.ans.surname)}
+              ${ansRow("Pavadinimas", p.title, r.ans.title)}
+              ${p.hasPlace ? ansRow("Kur", p.place, r.ans.place) : ""}</td>
+            <td>${correctCell(w)}</td>
+            <td><b>${fmt(p.total)}</b>&nbsp;/&nbsp;${p.max}</td></tr>`;
+        }).join("")}</tbody></table></div>
+      <div class="actions" style="margin-top:18px">
+        <button class="btn" data-act="again">Kartoti su tais pačiais nustatymais</button>
+        <button class="btn ghost" data-act="retry">Kartoti tik klaidas</button>
+        <button class="btn ghost" data-act="new">Naujas testas</button>
+      </div>`;
+    return results.filter((r, k) => P[k].total < P[k].max).map(r => r.idx);
+  }
+
+  function practiceReport(rep) {
+    const first = results.filter(r => r.solved && r.tries === 1).length;
+    const later = results.filter(r => r.solved && r.tries > 1).length;
+    const failed = results.filter(r => !r.solved).length;
+    const outcome = r => !r.solved ? `<span class="tag bad">neatspėta</span>`
+      : r.tries === 1 ? `<span class="tag ok">iš 1 karto</span>`
+      : `<span class="tag half">iš ${r.tries} karto</span>`;
+
+    rep.innerHTML = `
+      <h2>Praktikos rezultatai</h2>
+      <div class="score">
+        <div class="tile"><span class="muted">Iš pirmo karto</span><b>${first} / ${results.length}</b></div>
+        <div class="tile"><span class="muted">Iš 2–4 karto</span><b>${later}</b></div>
+        <div class="tile"><span class="muted">Neatspėta</span><b>${failed}</b></div>
+      </div>
+      ${leftNote()}
+      <div class="scroll" style="margin-top:16px"><table class="rep">
+        <thead><tr><th>#</th><th class="hide-sm">Kūrinys</th><th>Teisingas atsakymas</th><th>Rezultatas</th></tr></thead>
+        <tbody>${results.map((r, k) =>
+          `<tr>${rowHead(k, r.idx)}<td>${correctCell(WORKS[r.idx])}</td><td>${outcome(r)}</td></tr>`).join("")}</tbody></table></div>
+      <div class="actions" style="margin-top:18px">
+        <button class="btn" data-act="again">Kartoti su tais pačiais nustatymais</button>
+        <button class="btn ghost" data-act="retry">Kartoti tik tuos, kur klydau</button>
+        <button class="btn ghost" data-act="new">Nauja praktika</button>
+      </div>`;
+    return results.filter(r => !(r.solved && r.tries === 1)).map(r => r.idx);
+  }
 }
+
+createQuiz("practice");
+createQuiz("test");
 </script>
 </body>
 </html>

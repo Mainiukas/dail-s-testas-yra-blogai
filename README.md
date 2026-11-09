@@ -1,16 +1,45 @@
 # Lietuvos dailės testas 2026
 
-Atidaryk `index.html` naršyklėje (arba įjunk GitHub Pages).
+Atidaryk `index.html` naršyklėje (arba įjunk GitHub Pages). Kūriniai ir nuotraukos – iš dokumento „Lietuviu_daile_25“.
 
-- **Treniruotė** – visi kūriniai su nuotrauka, autoriumi ir pavadinimu (galima paslėpti atsakymus).
-- **Testavimas** – pasirenki intervalą (nuo Nr. iki Nr.) ir klausimų skaičių; kūriniai rodomi atsitiktine tvarka ir nesikartoja. 1 t. už pavardę, 1 t. už pavadinimą (0,5 t. už nedidelę rašybos klaidą). Pabaigoje – ataskaita.
+## Skiltys
+
+- **Treniruotė** – visi kūriniai su nuotrauka, autoriumi, pavadinimu ir vieta (atsakymus galima paslėpti).
+- **Praktika** – kaip testas, tik suklydus galima bandyti dar kartą. Po pirmų trijų neteisingų bandymų atsakymo nerodo
+  (tik pažymi, kurie langeliai teisingi), po ketvirto – parodo. Pabaigoje matyti, kas pavyko iš pirmo karto.
+- **Testavimas** – pasirenki intervalą (nuo Nr. iki Nr.) ir klausimų skaičių, atsakymą tikrina iš karto, pabaigoje – ataskaita.
+
+## Ką reikia įrašyti
+
+| Langelis | Kada rodomas | Taškai |
+|---|---|---|
+| Vardo raidė (-ės) | visada; du langeliai, jei autorius turi du vardus | 1 (du langeliai – po 0,5) |
+| Pavardė | visada | 1 |
+| Kūrinio pavadinimas | visada | 1 |
+| Kur | tik kur dokumente vieta parašyta po kablelio (10 kūrinių) | 1 |
+
+Už nedidelę rašybos klaidą ar netikslią žodžio formą duodama 0,5 taško.
+
+## Kaip tikrinami atsakymai (`grade.js`)
+
+Nesvarbu didžiosios raidės, lietuviškos raidės (`ą` = `a`), kabutės, skyryba ir **žodžių tvarka**.
+Priimami variantai aprašyti `works.js` lauke `accept`:
+
+- `[žodis]` – neprivalomas žodis, `a|b` – tinka bet kuris variantas;
+- pvz. `[buvęs] [kauno] [centrinis] paštas` priima ir „buvęs Kauno centrinis paštas“, ir „buvęs centrinis Kauno paštas“.
+
+Norėdamas, kad būtų užskaitytas dar vienas variantas, papildyk to kūrinio `accept`.
+
+## Atsitiktinė tvarka
+
+Kūriniai nesikartoja. To paties autoriaus kūriniai nestatomi vienas šalia kito, o nauja eilė parenkama taip, kad
+būtų kuo mažiau panaši į kelis paskutinius bandymus (jie įsimenami naršyklėje). Jei klausiama tik dalies kūrinių,
+pirmenybė tiems, kurių neseniai nebuvo.
 
 ## Nuotraukos
 
-Nuotraukos paimtos iš dokumento „Lietuviu_daile_25.docx“ ir sudėtos į aplanką `img/` pagal kūrinio numerį:
-`01.jpg` … `29.jpg`. Kūriniai su keliomis nuotraukomis turi papildomas: `18-2.jpg` (Jonyno „Metai“),
-`29-2.jpg`, `29-3.jpg` („Vilniaus ženklai“); jų skaičius nurodytas `works.js` lauke `extra`.
-Norėdamas pakeisti nuotrauką, tiesiog pakeisk failą tuo pačiu pavadinimu.
+Aplanke `img/` pagal kūrinio numerį: `01.jpg` … `29.jpg`. Kūriniai su keliomis nuotraukomis turi papildomas:
+`18-2.jpg` (Jonyno „Metai“), `29-2.jpg`, `29-3.jpg` („Vilniaus ženklai“); jų skaičius – `works.js` lauke `extra`.
 
 | Nr. | Kūrinys | Nr. | Kūrinys |
 |---|---|---|---|
@@ -29,5 +58,3 @@ Norėdamas pakeisti nuotrauką, tiesiog pakeisk failą tuo pačiu pavadinimu.
 | 13 | Samuolis – Geltona moteris | 28 | Navakas – Kablys |
 | 14 | Zikaras – Laisvė | 29 | K. Vildžiūnas – Vilniaus ženklai |
 | 15 | Zikaras – Knygnešys | | |
-
-Kūrinių sąrašą ir priimamus atsakymų variantus galima redaguoti faile `works.js`.
