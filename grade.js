@@ -137,28 +137,31 @@
   }
 
   // ans: { init: ["M", "K"], surname, title, place }
-  function gradeAll(w, ans) {
+  // hard = false (paprastas lygis): tikrinama tik pavardė ir pavadinimas, init ir place lieka null.
+  // hard = true (sunkesnis lygis): dar vardo raidė (-ės) ir vieta, jei kūrinys ją turi.
+  function gradeAll(w, ans, hard) {
     return {
-      init: w.first.map((f, i) => gradeInitial(ans.init[i] || "", f)),
+      init: hard ? w.first.map((f, i) => gradeInitial(ans.init[i] || "", f)) : null,
       surname: gradeSurname(ans.surname, w),
       title: gradeText(ans.title, w._title),
-      place: w.place ? gradeText(ans.place, w._place) : null
+      place: hard && w.place ? gradeText(ans.place, w._place) : null
     };
   }
 
-  // Taškai: po 1 už vardo raidę (-es), pavardę, pavadinimą ir vietą (jei jos klausiama).
+  // Taškai: po 1 už pavardę ir pavadinimą; sunkesniame lygyje – dar po 1 už vardo raidę (-es) ir vietą.
   function points(sc) {
-    const init = sc.init.reduce((a, b) => a + b, 0) / sc.init.length;
-    const hasPlace = sc.place !== null;
+    const hasInit = sc.init !== null, hasPlace = sc.place !== null;
+    const init = hasInit ? sc.init.reduce((a, b) => a + b, 0) / sc.init.length : 0;
+    const place = hasPlace ? sc.place : 0;
     return {
-      init: init, surname: sc.surname, title: sc.title, place: hasPlace ? sc.place : 0, hasPlace: hasPlace,
-      total: init + sc.surname + sc.title + (hasPlace ? sc.place : 0),
-      max: hasPlace ? 4 : 3
+      init: init, surname: sc.surname, title: sc.title, place: place, hasInit: hasInit, hasPlace: hasPlace,
+      total: init + sc.surname + sc.title + place,
+      max: 2 + (hasInit ? 1 : 0) + (hasPlace ? 1 : 0)
     };
   }
 
-  const allRight = sc => sc.init.every(x => x === 1) && sc.surname === 1 && sc.title === 1 &&
-    (sc.place === null || sc.place === 1);
+  const allRight = sc => (sc.init === null || sc.init.every(x => x === 1)) && sc.surname === 1 &&
+    sc.title === 1 && (sc.place === null || sc.place === 1);
 
   root.Grade = { norm: norm, prepare: prepare, gradeAll: gradeAll, gradeText: gradeText,
     gradeSurname: gradeSurname, points: points, allRight: allRight };

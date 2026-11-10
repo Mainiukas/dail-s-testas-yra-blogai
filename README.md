@@ -7,16 +7,21 @@ Atidaryk `index.html` naršyklėje (arba įjunk GitHub Pages). Kūriniai ir nuot
 - **Treniruotė** – visi kūriniai su nuotrauka, autoriumi, pavadinimu ir vieta (atsakymus galima paslėpti).
 - **Praktika** – kaip testas, tik suklydus galima bandyti dar kartą. Po pirmų trijų neteisingų bandymų atsakymo nerodo
   (tik pažymi, kurie langeliai teisingi), po ketvirto – parodo. Pabaigoje matyti, kas pavyko iš pirmo karto.
-- **Testavimas** – pasirenki intervalą (nuo Nr. iki Nr.) ir klausimų skaičių, atsakymą tikrina iš karto, pabaigoje – ataskaita.
+- **Testavimas** – pasirenki lygį, intervalą (nuo Nr. iki Nr.) ir klausimų skaičių, atsakymą tikrina iš karto, pabaigoje – ataskaita.
 
-## Ką reikia įrašyti
+## Lygiai ir langeliai
 
-| Langelis | Kada rodomas | Taškai |
-|---|---|---|
-| Vardo raidė (-ės) | visada; du langeliai, jei autorius turi du vardus | 1 (du langeliai – po 0,5) |
-| Pavardė | visada | 1 |
-| Kūrinio pavadinimas | visada | 1 |
-| Kur | tik kur dokumente vieta parašyta po kablelio (10 kūrinių) | 1 |
+Praktikoje ir teste prieš pradedant pasirenkamas lygis (jis įsimenamas naršyklėje):
+
+- **Paprastas** – tik pavardė ir kūrinio pavadinimas (iki 2 taškų už klausimą).
+- **Sunkesnis** – dar vardo raidė (-ės) ir vieta (3 arba 4 taškai už klausimą).
+
+| Langelis | Lygis | Kada rodomas | Taškai |
+|---|---|---|---|
+| Pavardė | abu | visada | 1 |
+| Kūrinio pavadinimas | abu | visada | 1 |
+| Vardo raidė (-ės) | sunkesnis | visada; du langeliai, jei autorius turi du vardus | 1 (du langeliai – po 0,5) |
+| Kur | sunkesnis | tik kur dokumente vieta parašyta po kablelio (10 kūrinių) | 1 |
 
 Už nedidelę rašybos klaidą ar netikslią žodžio formą duodama 0,5 taško.
 

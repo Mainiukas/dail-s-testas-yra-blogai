@@ -85,6 +85,13 @@
     font-size: .9rem; padding: 12px; background: var(--bg); }
 
   /* Praktika ir testas */
+  .levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 4px; }
+  .level { display: flex; gap: 10px; align-items: flex-start; font-weight: 400; font-size: 1rem; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); }
+  .level:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .level input { margin: 5px 0 0; accent-color: var(--accent); }
+  .level b, .level small { display: block; }
+  .level small { color: var(--muted); font-size: .9rem; }
   .setup { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; margin-block: 16px; }
   .setup > div { display: grid; gap: 4px; }
   .progress { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; margin-bottom: 14px; }
@@ -135,7 +142,7 @@
 
   @media (max-width: 680px) {
     .item { grid-template-columns: 1fr; }
-    .setup, .answers { grid-template-columns: 1fr; }
+    .setup, .answers, .levels { grid-template-columns: 1fr; }
     .rep .hide-sm { display: none; }
     .rep .cap { min-width: 0; }
   }
@@ -157,7 +164,7 @@
 <main class="wrap">
   <section id="train">
     <h2>Treniruotė</h2>
-    <p class="muted">Visi kūriniai su autoriumi, pavadinimu ir vieta. Praktikoje ir teste reikės įrašyti vardo raidę, pavardę, kūrinio pavadinimą ir – kur nurodyta – vietą.</p>
+    <p class="muted">Visi kūriniai su autoriumi, pavadinimu ir vieta. Praktikoje ir teste paprastame lygyje reikia įrašyti pavardę ir pavadinimą, sunkesniame – dar vardo raidę ir vietą (kur ji nurodyta).</p>
     <div class="tools">
       <input type="text" id="filter" placeholder="Ieškoti autoriaus ar pavadinimo…" aria-label="Ieškoti autoriaus ar pavadinimo">
       <label class="toggle"><input type="checkbox" id="hideAnswers"> Paslėpti atsakymus (spausk, kad atidengtum)</label>
@@ -354,9 +361,22 @@ function hintLine(score, what) {             // be teisingo atsakymo (praktikai)
   return `<div class="fb ${CLS(score)}">${ICON(score)} ${what}: ${text}</div>`;
 }
 const authorScore = sc => {
+  if (sc.init === null) return sc.surname;   // paprastas lygis: tik pavardė
   const init = sum(sc.init) / sc.init.length;
   return init === 1 && sc.surname === 1 ? 1 : init === 0 && sc.surname === 0 ? 0 : 0.5;
 };
+
+/* ---------- Lygis ----------
+   Paprastas: pavardė ir pavadinimas. Sunkesnis: dar vardo raidė (-ės) ir vieta.
+   Pasirinkimas bendras praktikai ir testui, įsimenamas naršyklėje. */
+const LKEY = "dailes-testas-lygis";
+let level = "easy";
+try { if (localStorage.getItem(LKEY) === "hard") level = "hard"; } catch (e) { /* lieka paprastas */ }
+function setLevel(v) {
+  level = v === "hard" ? "hard" : "easy";
+  try { localStorage.setItem(LKEY, level); } catch (e) { /* nieko tokio */ }
+  document.querySelectorAll("input[data-level]").forEach(r => r.checked = r.value === level);
+}
 
 /* ---------- Praktika ir testas (tas pats variklis, skiriasi tik tikrinimas) ---------- */
 function createQuiz(mode) {
@@ -365,8 +385,9 @@ function createQuiz(mode) {
   const maxFirst = Math.max(...WORKS.map(w => w.first.length));
   const T = isTest ? {
     h: "Testavimas", start: "Pradėti testą", finish: "Baigti testą", last: "Rodyti ataskaitą",
-    intro: "Pasirink kūrinių intervalą ir klausimų skaičių. Kūriniai rodomi atsitiktine tvarka ir nesikartoja. " +
-      "Po 1 tašką už vardo raidę (-es), pavardę, pavadinimą ir vietą (jei jos klausiama); už nedidelę rašybos klaidą – 0,5 taško."
+    intro: "Pasirink lygį, kūrinių intervalą ir klausimų skaičių. Kūriniai rodomi atsitiktine tvarka ir nesikartoja. " +
+      "Po 1 tašką už pavardę ir pavadinimą, sunkesniame lygyje – dar už vardo raidę (-es) ir vietą. " +
+      "Už nedidelę rašybos klaidą – 0,5 taško."
   } : {
     h: "Praktika", start: "Pradėti praktiką", finish: "Baigti praktiką", last: "Rodyti rezultatus",
     intro: "Kaip testas, tik suklydus galima bandyti dar kartą. Po pirmų trijų neteisingų bandymų atsakymo nerodo – " +
@@ -379,6 +400,13 @@ function createQuiz(mode) {
     <div class="card" id="${id("setup")}">
       <h2>${T.h}</h2>
       <p class="muted">${T.intro}</p>
+      <div class="lab" id="${id("levellab")}">Lygis</div>
+      <div class="levels" role="radiogroup" aria-labelledby="${id("levellab")}">
+        <label class="level"><input type="radio" name="${id("level")}" id="${id("level-easy")}" value="easy" data-level>
+          <span><b>Paprastas</b><small>Pavardė ir pavadinimas</small></span></label>
+        <label class="level"><input type="radio" name="${id("level")}" id="${id("level-hard")}" value="hard" data-level>
+          <span><b>Sunkesnis</b><small>Dar vardo raidė (-ės) ir vieta</small></span></label>
+      </div>
       <div class="setup">
         <div><label for="${id("from")}">Nuo kūrinio Nr.</label><input type="number" inputmode="numeric" id="${id("from")}" min="1" max="${N}" value="1"></div>
         <div><label for="${id("to")}">Iki kūrinio Nr.</label><input type="number" inputmode="numeric" id="${id("to")}" min="1" max="${N}" value="${N}"></div>
@@ -395,7 +423,7 @@ function createQuiz(mode) {
       <div class="answers">
         <div class="field">
           <div class="author-row">
-            <div class="sub">
+            <div class="sub" id="${id("initsub")}">
               <span class="lab" id="${id("initlab")}">Vardo raidė</span>
               <div class="initials" role="group" aria-labelledby="${id("initlab")}">
                 ${Array.from({ length: maxFirst }, (_, i) =>
@@ -434,9 +462,12 @@ function createQuiz(mode) {
   const surname = el("surname"), title = el("title"), place = el("place");
   const fromEl = el("from"), toEl = el("to"), countEl = el("count");
   let queue = [], pos = 0, results = [], done = false, wrong = 0, lastSetup = null;
+  let hardMode = false;                      // šio bandymo lygis (nustatomas pradedant)
 
   const work = () => WORKS[queue[pos]];
-  const fields = () => inits.slice(0, work().first.length).concat([surname, title], work().place ? [place] : []);
+  const asksPlace = w => hardMode && !!w.place;
+  const fields = () => (hardMode ? inits.slice(0, work().first.length) : [])
+    .concat([surname, title], asksPlace(work()) ? [place] : []);
   const total = () => sum(results.map(r => G.points(r.sc).total));
 
   /* --- nustatymai --- */
@@ -456,8 +487,10 @@ function createQuiz(mode) {
   [fromEl, toEl].forEach(x => x.oninput = () => { countEl.value = clampSetup().span; updateHint(); });
   countEl.oninput = updateHint;
   updateHint();
+  root.querySelectorAll("input[data-level]").forEach(r => r.onchange = () => setLevel(r.value));
 
-  function begin(pool, count) {
+  function begin(pool, count, lvl) {
+    hardMode = lvl === "hard";
     queue = makeQueue(pool, count);
     pos = 0; results = [];
     el("setup").hidden = true; el("report").hidden = true; el("run").hidden = false;
@@ -466,8 +499,8 @@ function createQuiz(mode) {
   }
   el("start").onclick = () => {
     const { f, t, c } = clampSetup();
-    lastSetup = { pool: Array.from({ length: t - f + 1 }, (_, i) => f - 1 + i), count: c };
-    begin(lastSetup.pool, lastSetup.count);
+    lastSetup = { pool: Array.from({ length: t - f + 1 }, (_, i) => f - 1 + i), count: c, level };
+    begin(lastSetup.pool, lastSetup.count, lastSetup.level);
   };
 
   /* --- klausimas --- */
@@ -484,43 +517,45 @@ function createQuiz(mode) {
     const q = el("qimg");
     q.innerHTML = "";
     q.appendChild(picture(queue[pos]));
-    inits.forEach((b, i) => b.hidden = i >= w.first.length);
+    el("initsub").hidden = !hardMode;
+    inits.forEach((b, i) => b.hidden = !hardMode || i >= w.first.length);
     el("initlab").textContent = w.first.length > 1 ? "Vardų raidės" : "Vardo raidė";
-    el("placefield").hidden = !w.place;
+    el("placefield").hidden = !asksPlace(w);
     inits.concat([surname, title, place]).forEach(x => { x.value = ""; x.disabled = false; x.className = ""; });
     ["fb-author", "fb-title", "fb-place", "msg"].forEach(k => el(k).innerHTML = "");
     el("check").hidden = false; el("next").hidden = true;
     showStatus();
-    inits[0].focus();
+    fields()[0].focus();
   }
   const readAnswers = w => ({
-    init: w.first.map((_, i) => inits[i].value.trim()),
+    init: hardMode ? w.first.map((_, i) => inits[i].value.trim()) : [],
     surname: surname.value.trim(), title: title.value.trim(),
-    place: w.place ? place.value.trim() : ""
+    place: asksPlace(w) ? place.value.trim() : ""
   });
   function paint(w, sc) {                    // nuspalvina langelius pagal tai, kas teisinga
-    w.first.forEach((_, i) => inits[i].className = "is-" + CLS(sc.init[i]));
+    if (sc.init) w.first.forEach((_, i) => inits[i].className = "is-" + CLS(sc.init[i]));
     surname.className = "is-" + CLS(sc.surname);
     title.className = "is-" + CLS(sc.title);
-    if (w.place) place.className = "is-" + CLS(sc.place);
+    if (sc.place !== null) place.className = "is-" + CLS(sc.place);
   }
   function revealAnswers(w, sc) {
     el("fb-author").innerHTML = answerLine(authorScore(sc), w.author);
     el("fb-title").innerHTML = answerLine(sc.title, w.title);
-    if (w.place) el("fb-place").innerHTML = answerLine(sc.place, w.place.name);
+    if (sc.place !== null) el("fb-place").innerHTML = answerLine(sc.place, w.place.name);
     fields().forEach(x => x.disabled = true);
   }
   function hintAnswers(w, sc) {              // praktika: kas blogai, bet be atsakymo
     const a = [];
-    const initOk = sc.init.every(x => x === 1);
-    if (initOk && sc.surname === 1) a.push(hintLine(1, "Autorius"));
+    const initOk = sc.init === null || sc.init.every(x => x === 1);
+    if (sc.init === null) a.push(hintLine(sc.surname, "Pavardė"));
+    else if (initOk && sc.surname === 1) a.push(hintLine(1, "Autorius"));
     else {
       if (!initOk) a.push(hintLine(0, w.first.length > 1 ? "Vardų raidės (raudonas langelis)" : "Vardo raidė"));
       if (sc.surname !== 1) a.push(hintLine(sc.surname, "Pavardė"));
     }
     el("fb-author").innerHTML = a.join("");
     el("fb-title").innerHTML = hintLine(sc.title, "Pavadinimas");
-    if (w.place) el("fb-place").innerHTML = hintLine(sc.place, "Vieta");
+    if (sc.place !== null) el("fb-place").innerHTML = hintLine(sc.place, "Vieta");
     fields().forEach(x => { if (x.classList.contains("is-ok")) x.disabled = true; });
   }
   function questionDone() {
@@ -535,7 +570,7 @@ function createQuiz(mode) {
 
   function check() {
     if (done) return;
-    const w = work(), ans = readAnswers(w), sc = G.gradeAll(w, ans);
+    const w = work(), ans = readAnswers(w), sc = G.gradeAll(w, ans, hardMode);
     paint(w, sc);
     if (isTest) {
       const p = G.points(sc);
@@ -603,7 +638,9 @@ function createQuiz(mode) {
 
   /* --- ataskaita --- */
   const correctCell = w => `<b>${esc(w.author)}</b><br>${esc(w.title)}` +
-    (w.place ? `<br><span class="muted">Kur:</span> ${esc(w.place.name)}` : "");
+    (asksPlace(w) ? `<br><span class="muted">Kur:</span> ${esc(w.place.name)}` : "");
+  const levelNote = () => `<p class="muted">Lygis: ${hardMode
+    ? "sunkesnis (vardo raidė, pavardė, pavadinimas, vieta)" : "paprastas (pavardė ir pavadinimas)"}</p>`;
   const rowHead = (k, idx) => `<td>${k + 1}<div class="muted">Nr. ${idx + 1}</div></td><td class="hide-sm"></td>`;
   const leftNote = () => {
     const n = queue.length - results.length;
@@ -614,13 +651,13 @@ function createQuiz(mode) {
     el("run").hidden = true;
     const rep = el("report");
     rep.hidden = false;
-    const hard = isTest ? testReport(rep) : practiceReport(rep);
+    const redo = isTest ? testReport(rep) : practiceReport(rep);
     rep.querySelectorAll("tbody tr").forEach((tr, k) => tr.children[1].appendChild(picture(results[k].idx)));
     const again = rep.querySelector("[data-act=again]"), retry = rep.querySelector("[data-act=retry]");
     again.hidden = !lastSetup;
-    again.onclick = () => begin(lastSetup.pool, lastSetup.count);
-    retry.hidden = !hard.length;
-    retry.onclick = () => begin(hard, hard.length);
+    again.onclick = () => begin(lastSetup.pool, lastSetup.count, lastSetup.level);
+    retry.hidden = !redo.length;
+    retry.onclick = () => begin(redo, redo.length, lastSetup.level);
     rep.querySelector("[data-act=new]").onclick = () => { rep.hidden = true; el("setup").hidden = false; window.scrollTo(0, 0); };
     window.scrollTo(0, 0);
   }
@@ -628,18 +665,17 @@ function createQuiz(mode) {
   function testReport(rep) {
     const P = results.map(r => G.points(r.sc));
     const tot = sum(P.map(p => p.total)), max = sum(P.map(p => p.max));
-    const withPlace = P.filter(p => p.hasPlace);
-    const parts = [
-      ["Vardo raidės", sum(P.map(p => p.init)), P.length],
-      ["Pavardės", sum(P.map(p => p.surname)), P.length],
-      ["Pavadinimai", sum(P.map(p => p.title)), P.length]
-    ];
+    const withInit = P.filter(p => p.hasInit), withPlace = P.filter(p => p.hasPlace);
+    const parts = [];
+    if (withInit.length) parts.push(["Vardo raidės", sum(withInit.map(p => p.init)), withInit.length]);
+    parts.push(["Pavardės", sum(P.map(p => p.surname)), P.length], ["Pavadinimai", sum(P.map(p => p.title)), P.length]);
     if (withPlace.length) parts.push(["Kur", sum(withPlace.map(p => p.place)), withPlace.length]);
     const ansRow = (cap, score, text) =>
       `<div class="ans"><span class="cap">${cap}</span>${tag(score)}<span>${esc(text || "—")}</span></div>`;
 
     rep.innerHTML = `
       <h2>Ataskaita</h2>
+      ${levelNote()}
       <div class="score">
         <div class="tile"><span class="muted">Taškai</span><b>${fmt(tot)} / ${max}</b></div>
         <div class="tile"><span class="muted">Procentai</span><b>${max ? Math.round(tot / max * 100) : 0}%</b></div>
@@ -656,7 +692,7 @@ function createQuiz(mode) {
         <tbody>${results.map((r, k) => {
           const w = WORKS[r.idx], p = P[k];
           return `<tr>${rowHead(k, r.idx)}
-            <td>${ansRow("Vardas", p.init, r.ans.init.filter(Boolean).map(x => x.toUpperCase() + ".").join(" "))}
+            <td>${p.hasInit ? ansRow("Vardas", p.init, r.ans.init.filter(Boolean).map(x => x.toUpperCase() + ".").join(" ")) : ""}
               ${ansRow("Pavardė", p.surname, r.ans.surname)}
               ${ansRow("Pavadinimas", p.title, r.ans.title)}
               ${p.hasPlace ? ansRow("Kur", p.place, r.ans.place) : ""}</td>
@@ -681,6 +717,7 @@ function createQuiz(mode) {
 
     rep.innerHTML = `
       <h2>Praktikos rezultatai</h2>
+      ${levelNote()}
       <div class="score">
         <div class="tile"><span class="muted">Iš pirmo karto</span><b>${first} / ${results.length}</b></div>
         <div class="tile"><span class="muted">Iš 2–4 karto</span><b>${later}</b></div>
@@ -702,6 +739,7 @@ function createQuiz(mode) {
 
 createQuiz("practice");
 createQuiz("test");
+setLevel(level);                             // pažymi įsimintą lygį abiejose skiltyse
 </script>
 </body>
 </html>
